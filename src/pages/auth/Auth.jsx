@@ -33,6 +33,7 @@ function Auth() {
 
     try {
       let res = await login(formData).unwrap();
+      console.log(res);
 
       dispatch(
         setCredential({
@@ -43,6 +44,10 @@ function Auth() {
 
       if (res.role === "SUPER_ADMIN") {
         navigate("/super-admin");
+      }
+
+      if (res.role === "TEACHER") {
+        navigate("/teacher");
       }
 
       toast.success("Xush kelibsiz !");

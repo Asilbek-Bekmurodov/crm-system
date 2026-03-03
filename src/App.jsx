@@ -10,6 +10,8 @@ import All from "./pages/superAdmin/All/All";
 import Teachers from "./pages/superAdmin/Teachers/Teachers";
 import Administrator from "./pages/superAdmin/Administrator/Administrator";
 import Organization from "./pages/superAdmin/Organization/Organization";
+import Teacher from "./pages/teacher/Teacher";
+import Lessons from "./pages/teacher/Lessons/Lessons";
 
 function App() {
   return (
@@ -28,6 +30,9 @@ function App() {
         </Route>
 
         <Route path="/home" element={<Home />} />
+        <Route path="/teacher" element={<Teacher />}>
+          <Route index element={<Lessons />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

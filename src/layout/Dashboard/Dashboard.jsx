@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import styles from "./Dashboard.module.css";
 import { HiOutlineLogout } from "react-icons/hi";
 import { LayoutDashboard, Menu, X } from "lucide-react";
+import ProfileIcon from "../../ui/ProfileIcon/ProfileIcon";
 
 function Dashboard({ menuData }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,6 +63,7 @@ function Dashboard({ menuData }) {
             <Menu size={24} />
           </button>
           <h1 className={styles.title}>Dashboard</h1>
+          <ProfileIcon />
         </header>
 
         <main className={styles.main}>
