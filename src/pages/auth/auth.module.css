@@ -1,96 +1,398 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+
+:root {
+  --bg-dark: #0d0f10;
+  --input-bg: #1a1d1f;
+  --accent-blue: #82dbf7;
+  --accent-green: #b6f09c;
+  --text-gray: #94a3b8;
+  --white: #ffffff;
+}
+
 .wrapper {
+  display: flex;
   height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-dark);
+  overflow: hidden;
+  font-family: "Plus Jakarta Sans";
+}
+
+body {
+  font-family: "Plus Jakarta Sans";
+}
+
+.left {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  font-family: "Inter", sans-serif;
+  padding: 40px;
+  z-index: 2;
 }
 
-.form {
-  width: 360px;
-  padding: 40px 35px;
-  border-radius: 20px;
+.authCard {
+  width: 100%;
+  max-width: 420px;
+  animation: fadeIn 0.8s ease-out;
+}
 
-  backdrop-filter: blur(20px);
-  background: rgba(255, 255, 255, 0.05);
-
-  border: 1px solid rgba(255, 255, 255, 0.1);
-
-  box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.4),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-
+/* Konteynerni markazga tekislash */
+.backBtnWrapper {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-
-  transition: 0.4s ease;
+  align-items: center;
+  justify-content: center; /* MARKAZGA SURISH */
+  gap: 15px; /* Matn va chiziqlar orasidagi masofa */
+  margin-top: 25px;
+  width: 100%;
+  cursor: pointer;
 }
 
-.form:hover {
-  transform: translateY(-5px);
+
+.lineLeft, .lineRight {
+  width: 40px;
+  height: 1.5px;
+  background-color: #b6f09c; 
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.7;
+}
+
+
+.backBtnText {
+  color: #b6f09c;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+
+.backBtnWrapper:hover .lineLeft,
+.backBtnWrapper:hover .lineRight {
+  width: 80px; 
+  background-color: #fff;
+  opacity: 1;
+  box-shadow: 0 0 8px rgba(163, 230, 53, 0.6); 
+}
+
+.backBtnWrapper:hover .backBtnText {
+  color: #fff;
+  transform: scale(1.1); 
+  text-shadow: 0 0 10px rgba(163, 230, 53, 0.8);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.logoBox {
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 45px;
+  filter: drop-shadow(0 0 10px rgba(130, 219, 247, 0.4));
+}
+
+.logoText {
+  color: var(--white);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 1px;
 }
 
 .title {
-  color: white;
-  text-align: center;
-  font-weight: 600;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
+  color: var(--white);
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+}
+
+.title span {
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  color: var(--text-gray);
+  font-size: 15px;
+  margin-bottom: 35px;
+  line-height: 1.6;
 }
 
 .inputGroup {
   position: relative;
+  margin-bottom: 20px;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-gray);
+  transition: 0.3s;
 }
 
 .input {
   width: 100%;
-  padding: 14px 16px;
-  border-radius: 12px;
-
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid transparent;
-
-  color: white;
-  font-size: 14px;
-
+  padding: 18px 50px;
+  background-color: var(--input-bg);
+  border: 1.5px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  font-size: 15px;
+  color: var(--white);
   outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input:focus {
+  border-color: var(--accent-blue);
+  background-color: rgba(130, 219, 247, 0.05);
+  box-shadow: 0 0 20px rgba(130, 219, 247, 0.1);
+}
+
+.input:focus + .inputIcon {
+  color: var(--accent-blue);
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-gray);
+  padding: 5px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.eyeBtn:hover {
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.formOptions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0 30px;
+  font-size: 14px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.checkbox:hover {
+  color: var(--white);
+}
+
+.forgotPass {
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.loginBtn {
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(135deg, var(--accent-green) 0%, #a2e085 100%);
+  border: none;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 16px;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 10px 20px rgba(182, 240, 156, 0.2);
+}
+
+.loginBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(182, 240, 156, 0.3);
+}
+
+.loginBtn:active {
+  transform: translateY(0);
+}
+
+.footerText {
+  margin-top: 30px;
+  text-align: center;
+  color: var(--text-gray);
+  font-size: 14px;
+}
+
+.footerText a {
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.right {
+  flex: 1.2;
+  height: 100vh;
+  position: relative;
+  background-color: #000;
+}
+
+.authCard {
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+  animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.logoBox {
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logoWrapper {
+  background: linear-gradient(135deg, #82dbf7 0%, #b6f09c 100%);
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(130, 219, 247, 0.3);
+}
+
+.logoText {
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.inputGroup {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input {
+  width: 100%;
+  padding: 18px 52px;
+  background-color: #16191c;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  font-size: 15px;
+  color: #fff;
   transition: all 0.3s ease;
 }
 
 .input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: #4b5563;
 }
 
 .input:focus {
-  border: 1px solid #6366f1;
-  box-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
-  background: rgba(255, 255, 255, 0.12);
+  border-color: #b6f09c;
+  background-color: #1a1d21;
+  box-shadow: 0 0 0 4px rgba(182, 240, 156, 0.1);
 }
 
-.button {
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
+/* 📱 UNIVERSAL RESPONSIVE */
 
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: white;
-  font-weight: 600;
-  letter-spacing: 1px;
-
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+@media (max-width: 1024px) {
+  .right {
+    display: none !important;
+  }
+  .left {
+    flex: 1;
+    width: 100vw;
+    padding: 20px;
+    background: radial-gradient(circle at center, #1a1d21 0%, #0d0f10 100%);
+  }
 }
 
-.button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 35px rgba(139, 92, 246, 0.6);
+@media (max-width: 480px) {
+  .left {
+    padding: 15px;
+    align-items: center;
+  }
+
+  .authCard {
+    max-width: 100%;
+    transform: scale(0.95);
+  }
+
+  .title {
+    font-size: 28px !important;
+    text-align: center;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  .logoBox {
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+
+  .formOptions {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
 }
 
-.button:active {
-  transform: scale(0.98);
+@media (max-height: 720px) {
+  .authCard {
+    margin-top: 20px;
+  }
+  .logoBox {
+    margin-bottom: 15px;
+  }
+  .title {
+    font-size: 24px !important;
+  }
+  .subtitle {
+    margin-bottom: 20px;
+  }
+  .input {
+    padding: 14px 50px !important;
+  }
 }

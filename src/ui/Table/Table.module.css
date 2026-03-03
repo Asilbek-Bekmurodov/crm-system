@@ -1,48 +1,175 @@
+:root {
+  /* === COLORS === */
+  --bg-color: #ffffff;
+  --header-bg: #f9fafb;
+  --row-even: #fcfcfd;
+  --row-hover: #f3f4f6;
 
+  --text-main: #111827;
+  --text-muted: #6b7280;
 
+  --border-color: #e5e7eb;
+  --column-divider: #e5e7eb;
 
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
+
+  /* === SIZES === */
+  --radius: 14px;
+  --spacing-y: 16px;
+  --spacing-x: 20px;
+  --font-size: 14px;
+}
+
+/* === TABLE CONTAINER === */
 .tableContainer {
+  width: 100%;
   overflow-x: auto;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  background: var(--bg-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+/* Scroll */
+.tableContainer::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+
+/* === TABLE === */
+.table {
+  width: 100%;
+  min-width: 750px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: var(--font-size);
+}
+
+/* === HEADER === */
+.table thead {
+  background: var(--header-bg);
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+
+  padding: var(--spacing-y) var(--spacing-x);
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* === BODY === */
+.table td {
+  padding: var(--spacing-y) var(--spacing-x);
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-color);
+  transition: background 0.2s ease;
+}
+
+/* 🔥 Vertikal ustun chiziqlari */
+.table th:not(:last-child),
+.table td:not(:last-child) {
+  border-right: 1px solid var(--column-divider);
+}
+
+/* Zebra effect */
+.table tbody tr:nth-child(even) td {
+  background: var(--row-even);
+}
+
+/* Hover */
+.table tbody tr:hover td {
+  background: var(--row-hover);
+}
+
+/* Remove last border */
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Index column */
+.index {
+  width: 50px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* Optional: smooth row animation */
+.table tbody tr {
+  transition: transform 0.15s ease;
+}
+
+.table tbody tr:hover {
+  transform: scale(1.002);
+}
+
+.actionCell {
+  text-align: center;
+  cursor: pointer;
+  width: 60px; /* Ikonka ustuni kengligini belgilash */
+}
+
+.editIcon {
+  color: #4a90e2;
+  font-size: 18px;
+}
+
+.deleteIcon {
+  color: #e74c3c;
+  font-size: 18px;
+}
+
+.table td {
+  padding: 12px 8px;
+  vertical-align: middle; /* Katak ichida vertikal o'rtaga olish */
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 800px;
 }
 
-.table thead {
-  background: #f7f7f7;
-}
-
-.table th {
-  text-align: left;
-  padding: 14px 18px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #444;
-  border-bottom: 1px solid #eaeaea;
-}
-
+.table th,
 .table td {
-  padding: 14px 18px;
-  font-size: 14px;
-  color: #555;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
 }
 
-.table tbody tr {
-  transition: background 0.2s ease;
+/* Action ustunlari uchun maxsus kenglik va markazlash */
+.actionCell {
+  width: 50px;
+  text-align: center;
+  cursor: pointer;
 }
 
-.table tbody tr:hover {
-  background: #fafafa;
+.editIcon {
+  color: #4a90e2;
+  font-size: 18px;
+}
+.deleteIcon {
+  color: #e74c3c;
+  font-size: 18px;
 }
 
 .index {
-  font-weight: 500;
-  color: #888;
+  width: 40px;
+  font-weight: bold;
 }

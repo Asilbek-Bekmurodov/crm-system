@@ -8,6 +8,8 @@ import Admins from "./pages/superAdmin/Admins/Admins";
 import Students from "./pages/superAdmin/Students/Students";
 import All from "./pages/superAdmin/All/All";
 import Teachers from "./pages/superAdmin/Teachers/Teachers";
+import Administrator from "./pages/superAdmin/Administrator/Administrator";
+import Organization from "./pages/superAdmin/Organization/Organization";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
           <Route path="admins" element={<Admins />} />
           <Route path="students" element={<Students />} />
           <Route path="teachers" element={<Teachers />} />
+          <Route path="administrators" element={<Administrator />} />
+          <Route path="organizations" element={<Organization />} />
         </Route>
 
         <Route path="/home" element={<Home />} />

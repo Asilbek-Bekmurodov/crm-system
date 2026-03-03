@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://crmsystem-ftyv.onrender.com/api",
+    baseUrl: "http://13.63.35.55:8080/api",
     prepareHeaders: (headers, { getState }) => {
       const state = getState?.();
       const token = state?.auth?.token || localStorage.getItem("token");

@@ -1,0 +1,126 @@
+:root {
+  --error-color: #6366f1; /* Indigo */
+  --text-white: #ffffff;
+  --text-dim: rgba(255, 255, 255, 0.7);
+  --glass-bg: rgba(15, 23, 42, 0.3); /* To'q shaffof fon */
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #020617; /* Galaktika uchun chuqur koinot foni */
+  overflow: hidden;
+  font-family: "Inter", sans-serif;
+}
+
+/* Galaktika butun ekranni egallashi uchun wrapper */
+.galaxyWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Fondan yuqori, lekin kontentdan pastda */
+  pointer-events: none; /* Galaktika tugmalarni bosishga xalaqit bermasligi uchun */
+}
+
+.content {
+  position: relative;
+  z-index: 10; /* Galaktika ustida turishi uchun */
+  text-align: center;
+  padding: 40px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px); /* Shisha effekti */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 1s ease-out;
+}
+
+.errorCode {
+  font-size: clamp(80px, 12vw, 120px);
+  font-weight: 900;
+  margin: 0;
+  background: linear-gradient(to bottom, #fff, var(--error-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.divider {
+  width: 80px;
+  height: 4px;
+  background: var(--error-color);
+  margin: 24px auto;
+  border-radius: 2px;
+  box-shadow: 0 0 15px var(--error-color);
+}
+
+.title {
+  color: var(--text-white);
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.description {
+  color: var(--text-dim);
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: var(--text-white);
+  color: #0f172a;
+  padding: 14px 28px;
+  border-radius: 16px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.backBtn:hover {
+  background-color: var(--error-color);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+}
+
+.backBtn:active {
+  transform: translateY(0);
+}
+
+/* Animatsiyalar */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .content {
+    padding: 30px 20px;
+  }
+  .errorCode {
+    font-size: 80px;
+  }
+}

@@ -1,20 +1,22 @@
 export const superAdminMenu = [
   {
-    title: "All",
+    title: "Users",
     path: "/super-admin/",
   },
   {
-    title: "Admins",
-    path: "/super-admin/admins",
+    title: "Organizations",
+    path: "/super-admin/organizations/",
   },
-  {
-    title: "Student",
-    path: "/super-admin/students",
-  },
-  {
-    title: "Teachers",
-    path: "/super-admin/teachers",
-  },
+];
+
+export const OrganizationTableHeaders = [
+  "Id",
+  "Name",
+  "Description",
+  "LogoUrl",
+  "Active",
+  "Edit",
+  "Delete",
 ];
 
 export const AllTableHeaders = [
@@ -25,4 +27,6 @@ export const AllTableHeaders = [
   "Gender",
   "Username",
   "Role",
+  "Edit",
+  "Delete",
 ];

@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://crmsystem-ftyv.onrender.com",
+    baseUrl: "http://13.63.35.55:8080",
   }),
   endpoints: (builder) => ({
     login: builder.mutation({

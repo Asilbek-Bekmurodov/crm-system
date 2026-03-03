@@ -1,0 +1,422 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+
+:root {
+  /* Faqat rang o'zgaruvchilari yangilandi */
+  --bg-dark: #0d0f10;
+  --accent-green: #b6f09c;
+  --accent-blue: #82dbf7;
+  --text-gray: #94a3b8;
+  --glass: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  font-family: "Plus Jakarta Sans";
+}
+
+.container {
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  color: white;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Header & Nav */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 20px 0;
+}
+
+.nav {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 100px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.logoBox {
+  /* Binafshadan -> Yashil va Moviy gradientga */
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+  padding: 8px;
+  border-radius: 10px;
+  display: flex;
+  box-shadow: 0 0 15px rgba(182, 240, 156, 0.4);
+}
+
+.logo span {
+  /* Binafsha rang -> Yashilga */
+  color: var(--accent-green);
+}
+
+/* Desktop Menu */
+.menu {
+  display: flex;
+  gap: 32px;
+}
+
+.menu a {
+  color: var(--text-gray);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+.menu a:hover {
+  color: var(--accent-green); /* Hoverda yashil bo'ladi */
+  text-shadow: 0 0 8px rgba(182, 240, 156, 0.5);
+}
+
+/* Actions */
+.loginBtn {
+  /* Binafshadan -> Yashil gradientga */
+  background: linear-gradient(45deg, var(--accent-green), #a2e085);
+  border: none;
+  padding: 10px 24px;
+  color: #000; /* Yashil fonda qora matn o'qilishi osonroq */
+  border-radius: 100px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.loginBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(182, 240, 156, 0.5);
+}
+
+/* Hamburger Icon */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  z-index: 101;
+}
+
+/* Main Hero */
+.main {
+  position: relative;
+  z-index: 1;
+  padding-top: 25px;
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.div {
+  display: flex;
+}
+
+.title {
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.title span {
+  /* Binafsha gradient -> Yashil-oq gradientga */
+  background: linear-gradient(90deg, #fff, var(--accent-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  color: var(--text-gray);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin-bottom: 40px;
+}
+
+.previewContainer {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 50px;
+  position: relative;
+}
+
+.robotImg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 50px rgba(182, 240, 156, 0.2));
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* =========================
+   📱 Tablet (768px ↓)
+========================= */
+@media (max-width: 1024px) {
+  .main {
+    padding-top: 130px;
+    padding-inline: 20px;
+  }
+
+  .title {
+    font-size: 3.2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .previewContainer {
+    max-width: 500px;
+  }
+}
+
+/* =========================
+   📱 Mobile (768px ↓)
+========================= */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+    position: relative;
+    z-index: 1100;
+  }
+
+  .nav {
+    margin: 0 16px;
+    border-radius: 20px;
+    padding: 14px 20px;
+  }
+
+  /* Fullscreen Mobile Menu */
+  .menu {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(13, 15, 16, 0.98),
+      rgba(13, 15, 16, 1)
+    );
+    backdrop-filter: blur(25px);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 35px;
+    transform: translateX(100%);
+    transition: 0.5s ease;
+    z-index: 1000;
+  }
+
+  .menu.open {
+    transform: translateX(0);
+  }
+
+  .menu a {
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: white;
+  }
+
+  .loginBtn {
+    margin-top: 20px;
+    padding: 14px 45px;
+    font-size: 1rem;
+  }
+
+  /* Hero Section */
+  .main {
+    padding-top: 120px;
+  }
+
+  .title {
+    font-size: 2.4rem;
+    line-height: 1.25;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+  }
+
+  .previewContainer {
+    margin-top: 40px;
+    padding: 0 20px;
+  }
+
+  .robotImg {
+    max-width: 90%;
+  }
+}
+
+/* =========================
+   📱 Small Phones (480px ↓)
+========================= */
+@media (max-width: 480px) {
+  .nav {
+    padding: 12px 16px;
+  }
+
+  .logo {
+    font-size: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .menu a {
+    font-size: 1.4rem;
+  }
+
+  .loginBtn {
+    padding: 12px 35px;
+  }
+}
+
+/* ... avvalgi root va umumiy stillar ... */
+
+/* Desktopda menyu ichidagi loginni yashiramiz */
+.menu .loginBtn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* 1. Headerdagi Loginni yashirish */
+  .actions > .loginBtn {
+    display: none !important;
+  }
+
+  /* 2. Hamburger tugmasi */
+  .hamburger {
+    display: block;
+    position: relative;
+    z-index: 2001; /* Menyudan tepada turishi shart */
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* 3. Mobil menyu dizayni */
+  .menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px; /* Aniq kenglik */
+    height: 100vh;
+    background: rgba(13, 15, 16, 0.98); /* To'q fon */
+    backdrop-filter: blur(15px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Elementlarni vertikal markazlash */
+    align-items: center;
+    gap: 35px;
+
+    /* Yondan chiqish effekti */
+    transform: translateX(100%);
+    visibility: hidden;
+    transition:
+      transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      visibility 0.4s;
+    z-index: 2000;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: -15px 0 35px rgba(0, 0, 0, 0.6);
+  }
+
+  .menu.open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  /* Linklar stili */
+  .menu a {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+    opacity: 0.8;
+  }
+
+  .menu a:hover {
+    color: var(--accent-green);
+    opacity: 1;
+  }
+
+  /* 4. Menyu ichidagi Login tugmasi */
+  .menu .loginBtn {
+    display: flex !important;
+    width: 200px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    font-size: 1.1rem;
+    background: linear-gradient(45deg, var(--accent-green), #a2e085);
+    color: #000;
+    border-radius: 50px;
+    font-weight: 700;
+  }
+}
+
+.container {
+  min-height: 100vh;
+  background-color: #0d0f10;
+  color: white;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* GALAXY WRAPPER - FONNI TO'LIQ QOPLASH UCHUN */
+.galaxyWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0; /* Orqa fonda qolishi uchun */
+  pointer-events: none; /* Tugmalarga xalaqit bermaydi */
+}
+
+.galaxyWrapper canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Kontent Galaxy ustida ko'rinishi uchun */
+.header,
+.div {
+  position: relative;
+  z-index: 10;
+}
