@@ -116,6 +116,24 @@
   box-shadow: var(--shadow-md);
 }
 
+.emptyState {
+  width: 100%;
+  padding: 60px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(145deg, #ffffff, #f9fafb);
+  border: 1px solid #f1f1f1;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.emptyText {
+  font-size: 15px;
+  font-weight: 500;
+  color: #9ca3af;
+}
+
 /* Mobil moslashuvchanlik */
 @media (max-width: 768px) {
   .controls {

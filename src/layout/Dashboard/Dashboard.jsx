@@ -62,8 +62,10 @@ function Dashboard({ menuData }) {
           <button className={styles.menuBtn} onClick={toggleSidebar}>
             <Menu size={24} />
           </button>
-          <h1 className={styles.title}>Dashboard</h1>
-          <ProfileIcon />
+          <div className={styles.profileIcon}>
+            <h1 className={styles.title}>Dashboard</h1>
+            <ProfileIcon />
+          </div>
         </header>
 
         <main className={styles.main}>

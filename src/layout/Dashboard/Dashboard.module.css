@@ -27,6 +27,13 @@ body {
   background-color: var(--bg-main);
 }
 
+.profileIcon{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1030px;
+}
+
 /* ================= Sidebar ================= */
 .sidebar {
   width: var(--sidebar-width);
