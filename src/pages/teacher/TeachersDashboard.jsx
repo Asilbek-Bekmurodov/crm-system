@@ -1,7 +1,7 @@
 import { teacherMenuData } from "../../../data/Teacher";
 import Dashboard from "../../layout/Dashboard/Dashboard";
 
-function Teacher() {
+function TeacherDashboard() {
   return <Dashboard menuData={teacherMenuData} />;
 }
-export default Teacher;
+export default TeacherDashboard;

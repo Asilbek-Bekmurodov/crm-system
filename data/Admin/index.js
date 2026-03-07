@@ -1,14 +1,42 @@
 export let adminMenu = [
   {
-    title: "Uy ishi",
-    path: "/super-admin/",
+    title: "Dashboard",
+    path: "/admin/dashboard",
   },
   {
-    title: "Topshiriqlar",
-    path: "/super-admin/admins",
+    title: "Teacher",
+    path: "/admin/teacher",
   },
   {
-    title: "Baholar",
-    path: "/super-admin/students",
+    title: "Student",
+    path: "/admin/student",
+  },
+  {
+    title: "Attendance",
+    path: "/admin/attendance",
+  },
+  {
+    title: "Finance",
+    path: "/admin/finance",
+  },
+  {
+    title: "Notice",
+    path: "/admin/notice",
+  },
+  {
+    title: "Calendar",
+    path: "/admin/calendar",
+  },
+  {
+    title: "Message",
+    path: "/admin/message",
+  },
+  {
+    title: "Profile",
+    path: "/admin/profile",
+  },
+  {
+    title: "Settings",
+    path: "/admin/settings",
   },
 ];
