@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./Auth.module.css";
+import styles from "./auth.module.css";
 import { useLoginMutation } from "../../app/services/authApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
