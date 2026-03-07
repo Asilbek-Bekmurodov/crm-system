@@ -31,13 +31,17 @@ function App() {
         <Route path="/" element={<Public />} />
         <Route path="/auth" element={<Auth />} />
 
+        <Route path="/profile" element={<Profile />} />
+
         <Route path="/super-admin" element={<SuperAdmin />}>
           <Route index element={<All />} />
-          <Route path="admins" element={<Admins />} />
+          {/* <Route path="admins" element={<Admins />} />
           <Route path="students" element={<Students />} />
           <Route path="teachers" element={<Teachers />} />
-          <Route path="administrators" element={<Administrator />} />
+          <Route path="administrators" element={<Administrator />} /> */}
           <Route path="organizations" element={<Organization />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
 
         <Route path="/home" element={<Home />} />

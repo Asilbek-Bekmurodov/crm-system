@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://13.63.35.55:8080/api",
+    baseUrl: "https://crmsystem-production-d4ee.up.railway.app/api",
     prepareHeaders: (headers, { getState }) => {
       const state = getState?.();
       const token = state?.auth?.token || localStorage.getItem("token");
@@ -18,18 +18,18 @@ const userApi = createApi({
   endpoints: (builder) => ({
     getUser: builder.query({
       query: () => ({
-        url: "/users",
+        url: "/permissions",
       }),
       providesTags: ["user"],
     }),
     getByRole: builder.query({
       query: (role) => ({
-        url: `/users/role/${role}`,
+        url: `/permissions/role/${role}`,
       }),
     }),
     createUser: builder.mutation({
       query: (data) => ({
-        url: "/users",
+        url: "/permissions",
         method: "POST",
         body: data,
       }),
@@ -37,7 +37,7 @@ const userApi = createApi({
     }),
     editUser: builder.mutation({
       query: ({ data, id }) => ({
-        url: `/users/${id}`,
+        url: `/permissions/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -45,10 +45,14 @@ const userApi = createApi({
     }),
     deleteUser: builder.mutation({
       query: (id) => ({
-        url: `/users/${id}`,
+        url: `/permissions/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["user"],
+    }),
+    getMe: builder.query({
+      query: () => "/users/me",
+      providesTags: ["user"],
     }),
   }),
 });
@@ -59,5 +63,6 @@ export const {
   useDeleteUserMutation,
   useEditUserMutation,
   useGetByRoleQuery,
+  useGetMeQuery,
 } = userApi;
 export default userApi;

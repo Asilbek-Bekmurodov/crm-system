@@ -53,6 +53,13 @@ function Auth() {
       if (res.role === "ADMIN") {
         navigate("/admin");
       }
+      if (res.role === "ADMINISTRATOR") {
+        navigate("/administrator");
+      }
+
+      if (res.role === "STUDENT") {
+        navigate("/student");
+      }
 
       toast.success("Xush kelibsiz !");
     } catch (e) {

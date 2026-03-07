@@ -7,10 +7,15 @@ export const superAdminMenu = [
     title: "Organizations",
     path: "/super-admin/organizations/",
   },
+
+  {
+    title: "Settings",
+    path: "/super-admin/settings/",
+  },
 ];
 
 export const OrganizationTableHeaders = [
-  "Id",
+  "T/r",
   "Name",
   "Description",
   "LogoUrl",

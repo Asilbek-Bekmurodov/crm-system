@@ -97,7 +97,7 @@ function Organization() {
           />
         ) : (
           <div className={styles.emptyState}>
-            <p>Hech qanday tashkilot topilmadi.</p>
+            <p className={styles.emptyText}>Hech qanday tashkilot topilmadi.</p>
           </div>
         )}
       </div>

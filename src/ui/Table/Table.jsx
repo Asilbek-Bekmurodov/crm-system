@@ -2,7 +2,7 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import styles from "./Table.module.css";
 
-function Table({ headers, data, onDelete, onEdit, renderRow }) {
+function Table({ headers, data, onDelete, onEdit, renderRow , username }) {
   return (
     <div className={styles.tableContainer}>
       <table className={styles.table}>
@@ -23,12 +23,14 @@ function Table({ headers, data, onDelete, onEdit, renderRow }) {
                 >
                   <FaEdit className={styles.editIcon} />
                 </td>
-                <td
-                  className={styles.actionCell}
-                  onClick={() => onDelete(item.id)}
-                >
-                  <MdDelete className={styles.deleteIcon} />
-                </td>
+                {username !== "superadmin" && (
+                  <td
+                    className={styles.actionCell}
+                    onClick={() => onDelete(item.id)}
+                  >
+                    <MdDelete className={styles.deleteIcon} />
+                  </td>
+                )}
               </tr>
             ))
           ) : (
