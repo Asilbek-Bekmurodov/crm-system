@@ -9,10 +9,6 @@ export const superAdminMenu = [
   },
 
   {
-    title: "Profile",
-    path: "/super-admin/profile/",
-  },
-   {
     title: "Settings",
     path: "/super-admin/settings/",
   },
