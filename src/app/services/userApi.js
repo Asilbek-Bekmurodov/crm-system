@@ -18,18 +18,18 @@ const userApi = createApi({
   endpoints: (builder) => ({
     getUser: builder.query({
       query: () => ({
-        url: "/permissions",
+        url: "/users",
       }),
       providesTags: ["user"],
     }),
     getByRole: builder.query({
       query: (role) => ({
-        url: `/permissions/role/${role}`,
+        url: `/users/role/${role}`,
       }),
     }),
     createUser: builder.mutation({
       query: (data) => ({
-        url: "/permissions",
+        url: "/users",
         method: "POST",
         body: data,
       }),
@@ -37,7 +37,7 @@ const userApi = createApi({
     }),
     editUser: builder.mutation({
       query: ({ data, id }) => ({
-        url: `/permissions/${id}`,
+        url: `/users/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -45,7 +45,7 @@ const userApi = createApi({
     }),
     deleteUser: builder.mutation({
       query: (id) => ({
-        url: `/permissions/${id}`,
+        url: `/users/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["user"],
