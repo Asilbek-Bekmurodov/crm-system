@@ -50,6 +50,10 @@ function Auth() {
         navigate("/teacher");
       }
 
+      if (res.role === "ADMIN") {
+        navigate("/admin");
+      }
+
       toast.success("Xush kelibsiz !");
     } catch (e) {
       console.log(e);
