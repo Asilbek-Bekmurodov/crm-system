@@ -1,16 +1,11 @@
 export const superAdminMenu = [
   {
-    title: "Users",
-    path: "/super-admin/",
-  },
-  {
     title: "Organizations",
     path: "/super-admin/organizations/",
   },
-
   {
-    title: "Settings",
-    path: "/super-admin/settings/",
+    title: "Users",
+    path: "/super-admin",
   },
 ];
 

@@ -4,11 +4,7 @@ import Home from "./pages/home/Home";
 import Auth from "./pages/auth/Auth";
 import NotFound from "./pages/NotFound/NotFound";
 import SuperAdmin from "./pages/superAdmin/SuperAdmin";
-import Admins from "./pages/superAdmin/Admins/Admins";
-import Students from "./pages/superAdmin/Students/Student";
 import All from "./pages/superAdmin/All/All";
-import Teachers from "./pages/superAdmin/Teacher/Teachers";
-import Administrator from "./pages/superAdmin/Administrator/Administrator";
 import Organization from "./pages/superAdmin/Organization/Organization";
 import Lessons from "./pages/teacher/Lessons/Lessons";
 import Admin from "./pages/admin/Admin";
@@ -23,6 +19,7 @@ import Calendar from "./pages/admin/Calendar/Calendar";
 import Message from "./pages/admin/Message/Message";
 import Profile from "./pages/admin/Profile/Profile";
 import Settings from "./pages/admin/Settings/Settings";
+import OrganizationDetail from "./pages/superAdmin/OrganizationDetail/OrganizationDetail";
 
 function App() {
   return (
@@ -35,11 +32,8 @@ function App() {
 
         <Route path="/super-admin" element={<SuperAdmin />}>
           <Route index element={<All />} />
-          {/* <Route path="admins" element={<Admins />} />
-          <Route path="students" element={<Students />} />
-          <Route path="teachers" element={<Teachers />} />
-          <Route path="administrators" element={<Administrator />} /> */}
           <Route path="organizations" element={<Organization />} />
+          <Route path="organizations/:id" element={<OrganizationDetail />} />
           <Route path="profile" element={<Profile />} />
           <Route path="settings" element={<Settings />} />
         </Route>

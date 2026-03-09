@@ -10,11 +10,13 @@ import FirstLoader from "../../../ui/FirstLoader/FirstLoader";
 import Modal from "../../../ui/Modal/Modal";
 import CreateOrganizationForm from "../CreateOrganizationForm/CreateOrganizationForm";
 import ShowError from "../../../ui/ShowError/ShowError";
+import { useNavigate } from "react-router-dom";
 
 function Organization() {
   const [isOpen, setIsOpen] = useState(false);
   const [editingOrg, setEditingOrg] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const {
     data: organizations = [],
@@ -53,6 +55,10 @@ function Organization() {
     }
   }
 
+  function handleClick(item) {
+    navigate(`/super-admin/organizations/${item.id}`);
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -81,6 +87,7 @@ function Organization() {
             data={filteredOrgs}
             onDelete={handleDelete}
             onEdit={handleEdit}
+            onNavigate={handleClick}
             renderRow={(org) => (
               <>
                 <td>{org.name}</td>

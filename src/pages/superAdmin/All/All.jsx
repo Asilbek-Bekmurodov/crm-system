@@ -58,6 +58,11 @@ function All() {
     }
   }
 
+  function handleClick(item) {
+    const resolvedId = item?.id;
+    console.log("row click id:", resolvedId);
+  }
+
   return (
     <div className={styles.wrapper}>
       {/* HEADER */}
@@ -104,6 +109,7 @@ function All() {
           data={filteredUsers}
           onDelete={handleDelete}
           onEdit={handleEdit}
+          onNavigate={handleClick}
           renderRow={(user) => (
             <>
               <td>{user.firstname}</td>

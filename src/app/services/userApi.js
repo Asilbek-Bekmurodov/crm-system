@@ -29,7 +29,7 @@ const userApi = createApi({
     }),
     createUser: builder.mutation({
       query: (data) => ({
-        url: "/users",
+        url: "/admins",
         method: "POST",
         body: data,
       }),
@@ -37,7 +37,7 @@ const userApi = createApi({
     }),
     editUser: builder.mutation({
       query: ({ data, id }) => ({
-        url: `/users/${id}`,
+        url: `/admins/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -45,7 +45,7 @@ const userApi = createApi({
     }),
     deleteUser: builder.mutation({
       query: (id) => ({
-        url: `/users/${id}`,
+        url: `/admins/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["user"],
