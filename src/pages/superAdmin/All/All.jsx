@@ -17,7 +17,7 @@ function All() {
   const [filterRole, setFilterRole] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: users = [], isLoading, isError } = useGetUserQuery();
+  const { data: users = [], isLoading, isError } = useGetUserQuery("users");
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
 
   // --- FILTRLASH VA QIDIRUV MANTIQLARI ---
