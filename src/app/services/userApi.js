@@ -17,8 +17,8 @@ const userApi = createApi({
   tagTypes: ["user"],
   endpoints: (builder) => ({
     getUser: builder.query({
-      query: () => ({
-        url: "/users",
+      query: (query) => ({
+        url: `/${query}`,
       }),
       providesTags: ["user"],
     }),
@@ -28,24 +28,24 @@ const userApi = createApi({
       }),
     }),
     createUser: builder.mutation({
-      query: (data) => ({
-        url: "/admins",
+      query: ({ data, query }) => ({
+        url: `/${query}`,
         method: "POST",
         body: data,
       }),
       invalidatesTags: ["user"],
     }),
     editUser: builder.mutation({
-      query: ({ data, id }) => ({
-        url: `/admins/${id}`,
+      query: ({ data, id, query }) => ({
+        url: `/${query}/${id}`,
         method: "PUT",
         body: data,
       }),
       invalidatesTags: ["user"],
     }),
     deleteUser: builder.mutation({
-      query: (id) => ({
-        url: `/admins/${id}`,
+      query: ({ id, query }) => ({
+        url: `/${query}/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["user"],

@@ -17,7 +17,7 @@ export const OrganizationTableHeaders = [
   "Active",
   "Edit",
   "Delete",
-  "Open"
+  "Open",
 ];
 
 export const AllTableHeaders = [
@@ -30,5 +30,5 @@ export const AllTableHeaders = [
   "Role",
   "Edit",
   "Delete",
-  "Open"
+  "Open",
 ];

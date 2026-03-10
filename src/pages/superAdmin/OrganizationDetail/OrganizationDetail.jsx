@@ -69,7 +69,10 @@ function OrganizationDetail() {
     }
 
     try {
-      let res = await createAdmin(formData).unwrap();
+      let res = await createAdmin({
+        query: "admins",
+        data: formData,
+      }).unwrap();
       console.log(res);
 
       toast.success("Admin muvaffaqiyatli yaratildi!");

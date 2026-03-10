@@ -4,12 +4,18 @@ import styles from "./Dashboard.module.css";
 import { HiOutlineLogout } from "react-icons/hi";
 import { LayoutDashboard, Menu, X } from "lucide-react";
 import ProfileIcon from "../../ui/ProfileIcon/ProfileIcon";
+import { useDispatch } from "react-redux";
+import { logOut } from "../../app/features/authSlice";
 
 function Dashboard({ menuData }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleLogout = () => navigate("/auth");
+  const handleLogout = () => {
+    dispatch(logOut());
+    navigate("/auth");
+  };
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   return (
