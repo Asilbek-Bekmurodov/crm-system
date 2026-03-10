@@ -173,3 +173,23 @@
   width: 40px;
   font-weight: bold;
 }
+
+.openBtn {
+  background-color: #6366f1;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.openBtn:hover {
+  background-color: #4f46e5;
+}
+
+.actionCell {
+  text-align: center;
+}

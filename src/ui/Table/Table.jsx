@@ -44,7 +44,7 @@ function Table({
                   className={styles.actionCell}
                   onClick={() => onNavigate(item)}
                 >
-                  Open
+                  <button className={styles.openBtn}>Open</button>
                 </td>
               </tr>
             ))

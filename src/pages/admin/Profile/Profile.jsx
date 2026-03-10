@@ -1,6 +1,19 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetMeQuery } from "../../../app/services/userApi";
+import {
+  ArrowLeft,
+  User,
+  Shield,
+  Image,
+  CreditCard,
+  Bell,
+  Globe,
+  LogOut,
+  Check,
+} from "lucide-react";
+import styles from "./Profile.module.css";
+import defaultImg from "../../../assets/1.jpg";
 
 function Profile() {
   const navigate = useNavigate();
