@@ -3,10 +3,10 @@ export const superAdminMenu = [
     title: "Organizations",
     path: "/super-admin/organizations/",
   },
-  {
-    title: "Users",
-    path: "/super-admin",
-  },
+  // {
+  //   title: "Users",
+  //   path: "/super-admin",
+  // },
 ];
 
 export const OrganizationTableHeaders = [
@@ -31,4 +31,16 @@ export const AllTableHeaders = [
   "Edit",
   "Delete",
   "Open",
+];
+
+export const AdminTableHeaders = [
+  "T/r",
+  "FirsName",
+  "LastName",
+  "Age",
+  "Gender",
+  "Username",
+  "Role",
+  "Edit",
+  "Delete",
 ];

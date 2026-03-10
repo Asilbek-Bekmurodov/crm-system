@@ -1,16 +1,26 @@
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetOrganizationByIdQuery } from "../../../app/services/organizationApi";
 import { useGetPermissionsQuery } from "../../../app/services/permissionsApi";
 import FirstLoader from "../../../ui/FirstLoader/FirstLoader";
 import { toast } from "react-toastify";
 import styles from "./OrganizationDetail.module.css";
-import { useCreateUserMutation } from "../../../app/services/userApi";
+import {
+  useCreateUserMutation,
+  useDeleteUserMutation,
+  useGetUserQuery,
+} from "../../../app/services/userApi";
+import { AdminTableHeaders } from "../../../../data/superAdmin";
+import Modal from "../../../ui/Modal/Modal";
+import Table from "../../../ui/Table/Table";
+import CreateAdmin from "../CreateAdminForm/CreateAdmin";
 
 function OrganizationDetail() {
   const { id } = useParams();
-  // const navigate = useNavigate();
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const { data: admins = [], isLoading, isError } = useGetUserQuery("admins");
   const { data: org, isLoading: isOrgLoading } =
     useGetOrganizationByIdQuery(id);
   const {
@@ -18,6 +28,7 @@ function OrganizationDetail() {
     isLoading: isPerLoading,
     isError: isAdminCreateError,
   } = useGetPermissionsQuery();
+  const [deleteAdmin, { isLoading: isDeleting }] = useDeleteUserMutation();
   const [createAdmin, { isLoading: isCreating }] = useCreateUserMutation();
 
   const [formData, setFormData] = useState({
@@ -29,6 +40,44 @@ function OrganizationDetail() {
     organizationId: id,
     permissions: [],
   });
+
+  const filteredUsers = useMemo(() => {
+    return admins?.content?.filter((user) => {
+      // 2. Qidiruv bo'yicha filtrlash (Ism, Familiya yoki Username)
+      const searchStr = searchTerm.toLowerCase();
+      const matchesSearch =
+        user.firstname?.toLowerCase().includes(searchStr) ||
+        user.lastname?.toLowerCase().includes(searchStr) ||
+        user.username?.toLowerCase().includes(searchStr);
+
+      return matchesSearch;
+    });
+  }, [admins, searchTerm]);
+
+  async function handleDelete(id) {
+    if (window.confirm("Haqiqatdan ham o'chirmoqchimisiz?")) {
+      try {
+        await deleteAdmin({ id, query: "admins" }).unwrap();
+        toast.success("Muvaffaqiyatli o'chirildi");
+      } catch (e) {
+        console.error("O'chirishda xatotlik:", e);
+        toast.error("Nimadur xato kedi!");
+      }
+    }
+  }
+
+  function handleEdit(id) {
+    const user = admins?.content?.find((u) => u.id === id);
+    if (user) {
+      setEditingUser(user);
+      setIsOpen(true);
+    }
+  }
+
+  function handleClick(item) {
+    const resolvedId = item?.id;
+    console.log("row click id:", resolvedId);
+  }
 
   const groupedPermissions = permissions?.reduce((acc, permission) => {
     const group = permission.split("_")[0];
@@ -82,132 +131,75 @@ function OrganizationDetail() {
     }
   }
 
-  if (isOrgLoading || isPerLoading) return <FirstLoader />;
-  if (isAdminCreateError) return <div>Error</div>;
+  if (isLoading || isPerLoading || isOrgLoading || isDeleting)
+    return <FirstLoader />;
+  if (isError || isAdminCreateError)
+    return <ShowError>Something went wrong!</ShowError>;
+
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>{org?.name || "Tashkilot"}</h1>
-        <p className={styles.subtitle}>
-          Yangi admin yaratish va huquqlarni biriktirish
-        </p>
-      </header>
+    <div className={styles.wrapper}>
+      {/* HEADER */}
+      <div className={styles.header}>
+        <h1>Admins</h1>
+        <button className={styles.createBtn} onClick={() => setIsOpen(true)}>
+          + Create Admin
+        </button>
+      </div>
 
-      <form onSubmit={handleSubmit}>
-        <div className={styles.inputGrid}>
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>
-              Foydalanuvchi nomi (Username)
-            </label>
-            <input
-              name="username"
-              className={styles.inputField}
-              type="text"
-              required
-              value={formData.username}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>Ismi</label>
-            <input
-              name="firstname"
-              className={styles.inputField}
-              type="text"
-              required
-              value={formData.firstname}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>Familiyasi</label>
-            <input
-              name="lastname"
-              className={styles.inputField}
-              type="text"
-              required
-              value={formData.lastname}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>Parol</label>
-            <input
-              name="password"
-              className={styles.inputField}
-              type="password"
-              required
-              value={formData.password}
-              onChange={handleInputChange}
-              autoComplete="current-password"
-            />
-          </div>
+      {/* CONTROLS: Filtrlar va Input */}
+      <div className={styles.controls}>
+        <div className={styles.searchBox}>
+          <input
+            type="text"
+            placeholder="Search users..."
+            className={styles.searchInput}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
+      </div>
 
-        <h2 className={styles.sectionTitle}>Huquqlarni belgilash</h2>
+      {/* TABLE */}
+      <div className={styles.tableContainer}>
+        <Table
+          headers={AdminTableHeaders}
+          data={filteredUsers.content || admins.content}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+          onNavigate={handleClick}
+          renderRow={(user) => (
+            <>
+              <td>{user.firstname}</td>
+              <td>{user.lastname}</td>
+              <td>{user.age}</td>
+              <td>{user.gender}</td>
+              <td>{user.username}</td>
+              <td>{user.role}</td>
+            </>
+          )}
+        />
+      </div>
 
-        <div className={styles.permissionsGrid}>
-          {groupedPermissions &&
-            Object.keys(groupedPermissions).map((group) => {
-              const groupPermissions = groupedPermissions[group];
-              const allChecked = groupPermissions.every((p) =>
-                formData.permissions.includes(p),
-              );
-
-              return (
-                <div
-                  key={group}
-                  className={`${styles.permissionGroup} ${
-                    allChecked ? styles.permissionGroupActive : ""
-                  }`}
-                >
-                  <div className={styles.groupHeader}>
-                    <label className={styles.groupTitleLabel}>
-                      <input
-                        type="checkbox"
-                        checked={allChecked}
-                        onChange={(e) =>
-                          handleGroupChange(groupPermissions, e.target.checked)
-                        }
-                      />
-                      <span className={styles.groupName}>
-                        {group} (Barchasi)
-                      </span>
-                    </label>
-                  </div>
-
-                  <div className={styles.groupContent}>
-                    {groupPermissions.map((el) => (
-                      <label key={el} className={styles.checkboxItem}>
-                        <input
-                          type="checkbox"
-                          value={el}
-                          checked={formData.permissions.includes(el)}
-                          onChange={handleCheckboxChange}
-                        />
-                        <span className={styles.permName}>
-                          {el.includes("_")
-                            ? el.split("_").slice(1).join(" ")
-                            : el}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-        </div>
-
-        <div className={styles.formFooter}>
-          <button
-            type="submit"
-            className={styles.submitBtn}
-            disabled={isCreating}
-          >
-            {isCreating ? "Saqlanmoqda..." : "Adminni saqlash"}
-          </button>
-        </div>
-      </form>
+      {/* MODAL */}
+      <Modal
+        isOpen={isOpen}
+        setIsOpen={(value) => {
+          setIsOpen(value);
+          if (!value) setEditingUser(null);
+        }}
+        title={editingUser ? "Edit User" : "Create User"}
+      >
+        <CreateAdmin
+          org={org}
+          handleSubmit={handleSubmit}
+          formData={formData}
+          handleInputChange={handleInputChange}
+          groupedPermissions={groupedPermissions}
+          handleGroupChange={handleGroupChange}
+          isCreating={isCreating}
+          handleCheckboxChange={handleCheckboxChange}
+        />
+      </Modal>
     </div>
   );
 }

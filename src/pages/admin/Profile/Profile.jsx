@@ -13,7 +13,7 @@ import {
   Check,
 } from "lucide-react";
 import styles from "./Profile.module.css";
-import defaultImg from "../../../assets/photo_2025-12-18_20-15-58.jpg";
+import defaultImg from "../../../assets/1.jpg";
 
 function Profile() {
   const navigate = useNavigate();
