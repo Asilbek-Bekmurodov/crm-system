@@ -1,20 +1,23 @@
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useGetOrganizationByIdQuery } from "../../../app/services/organizationApi";
 import { useGetPermissionsQuery } from "../../../app/services/permissionsApi";
 import FirstLoader from "../../../ui/FirstLoader/FirstLoader";
-import { toast } from "react-hot-toast";
+import { toast } from "react-toastify";
 import styles from "./OrganizationDetail.module.css";
 import { useCreateUserMutation } from "../../../app/services/userApi";
 
 function OrganizationDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { data: org, isLoading: isOrgLoading } =
     useGetOrganizationByIdQuery(id);
-  const { data: permissions, isLoading: isPerLoading } =
-    useGetPermissionsQuery();
+  const {
+    data: permissions,
+    isLoading: isPerLoading,
+    isError: isAdminCreateError,
+  } = useGetPermissionsQuery();
   const [createAdmin, { isLoading: isCreating }] = useCreateUserMutation();
 
   const [formData, setFormData] = useState({
@@ -66,16 +69,18 @@ function OrganizationDetail() {
     }
 
     try {
-      await createAdmin(formData).unwrap();
+      let res = await createAdmin(formData).unwrap();
+      console.log(res);
+
       toast.success("Admin muvaffaqiyatli yaratildi!");
-      navigate("/organizations");
+      // navigate("/organizations");
     } catch (err) {
       toast.error(err?.data?.message || "Xatolik yuz berdi");
     }
   }
 
   if (isOrgLoading || isPerLoading) return <FirstLoader />;
-
+  if (isAdminCreateError) return <div>Error</div>;
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -131,6 +136,7 @@ function OrganizationDetail() {
               required
               value={formData.password}
               onChange={handleInputChange}
+              autoComplete="current-password"
             />
           </div>
         </div>
