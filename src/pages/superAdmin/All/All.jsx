@@ -22,7 +22,7 @@ function All() {
 
   // --- FILTRLASH VA QIDIRUV MANTIQLARI ---
   const filteredUsers = useMemo(() => {
-    return users.filter((user) => {
+    return users?.content?.filter((user) => {
       // 1. Rol bo'yicha filtrlash
       const matchesRole = filterRole === "ALL" || user.role === filterRole;
 
@@ -51,11 +51,16 @@ function All() {
   }
 
   function handleEdit(id) {
-    const user = users.find((u) => u.id === id);
+    const user = users?.content?.find((u) => u.id === id);
     if (user) {
       setEditingUser(user);
       setIsOpen(true);
     }
+  }
+
+  function handleClick(item) {
+    const resolvedId = item?.id;
+    console.log("row click id:", resolvedId);
   }
 
   return (
@@ -104,6 +109,7 @@ function All() {
           data={filteredUsers}
           onDelete={handleDelete}
           onEdit={handleEdit}
+          onNavigate={handleClick}
           renderRow={(user) => (
             <>
               <td>{user.firstname}</td>

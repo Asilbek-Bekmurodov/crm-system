@@ -1,19 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
-import {
-  ArrowLeft,
-  User,
-  Shield,
-  Image,
-  CreditCard,
-  Bell,
-  Globe,
-  LogOut,
-  Check,
-} from "lucide-react";
-import styles from "./Profile.module.css";
-import defaultImg from "../../../assets/1.jpg";
 import { useGetMeQuery } from "../../../app/services/userApi";
 
 function Profile() {
