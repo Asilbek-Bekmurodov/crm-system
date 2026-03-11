@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react"; // useEffect qo'shildi
+import { useMemo, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useGetOrganizationByIdQuery } from "../../../app/services/organizationApi";
 import { useGetPermissionsQuery } from "../../../app/services/permissionsApi";
@@ -15,7 +15,6 @@ import Modal from "../../../ui/Modal/Modal";
 import Table from "../../../ui/Table/Table";
 import CreateAdmin from "../CreateAdminForm/CreateAdmin";
 
-// Dastlabki bo'sh holat (Formani tozalash uchun)
 const initialFormState = {
   username: "",
   firstname: "",
@@ -49,14 +48,13 @@ function OrganizationDetail() {
     organizationId: id,
   });
 
-  // 5. Edit qo'shish (EditingUser o'zgarganda formani to'ldirish)
   useEffect(() => {
     if (editingUser) {
       setFormData({
         username: editingUser.username || "",
         firstname: editingUser.firstname || "",
         lastname: editingUser.lastname || "",
-        password: "", // Xavfsizlik uchun parolni bo'sh qoldiramiz
+        password: "",
         role: editingUser.role || "ADMIN",
         organizationId: id,
         permissions: editingUser.permissions || [],
@@ -65,8 +63,6 @@ function OrganizationDetail() {
       setFormData({ ...initialFormState, organizationId: id });
     }
   }, [editingUser, id]);
-
-  // 6. Filterni to'g'ri ishlatish
   const filteredData = useMemo(() => {
     const list = admins?.content || [];
     if (!searchTerm) return list;
@@ -138,7 +134,6 @@ function OrganizationDetail() {
     }
 
     try {
-      // Bu yerda Create yoki Update logikasi bo'ladi
       await createAdmin({
         query: "admins",
         data: formData,
@@ -146,7 +141,6 @@ function OrganizationDetail() {
 
       toast.success(editingUser ? "Admin tahrirlandi!" : "Admin yaratildi!");
 
-      // 1. Forma tozalanishi va 4. Modal yopilishi
       setIsOpen(false);
       setEditingUser(null);
       setFormData({ ...initialFormState, organizationId: id });
@@ -166,7 +160,7 @@ function OrganizationDetail() {
         <button
           className={styles.createBtn}
           onClick={() => {
-            setEditingUser(null); // Yangi yaratish uchun editni tozalash
+            setEditingUser(null); 
             setIsOpen(true);
           }}
         >
@@ -178,7 +172,7 @@ function OrganizationDetail() {
         <div className={styles.searchBox}>
           <input
             type="text"
-            placeholder="Search users..." // 3. Placeholder qo'shildi
+            placeholder="Search users..." 
             className={styles.searchInput}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -189,7 +183,7 @@ function OrganizationDetail() {
       <div className={styles.tableContainer}>
         <Table
           headers={AdminTableHeaders}
-          data={filteredData} // 6. Filterlangan ma'lumot uzatildi
+          data={filteredData} 
           onDelete={handleDelete}
           onEdit={handleEdit}
           renderRow={(user) => (
