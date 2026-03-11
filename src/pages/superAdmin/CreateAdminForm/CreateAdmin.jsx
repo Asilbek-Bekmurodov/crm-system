@@ -32,6 +32,7 @@ function CreateAdmin({
               required
               value={formData.username}
               onChange={handleInputChange}
+              placeholder="username"
             />
           </div>
           <div className={styles.inputGroup}>
@@ -41,6 +42,7 @@ function CreateAdmin({
               className={styles.inputField}
               type="text"
               required
+              placeholder="firstname"
               value={formData.firstname}
               onChange={handleInputChange}
             />
@@ -52,6 +54,7 @@ function CreateAdmin({
               className={styles.inputField}
               type="text"
               required
+              placeholder="lastname"
               value={formData.lastname}
               onChange={handleInputChange}
             />
@@ -63,6 +66,7 @@ function CreateAdmin({
               className={styles.inputField}
               type="password"
               required
+              placeholder="password"
               value={formData.password}
               onChange={handleInputChange}
               autoComplete="current-password"
