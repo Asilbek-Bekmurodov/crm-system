@@ -18,7 +18,7 @@ import defaultImg from "../../../assets/1.jpg";
 function Profile() {
   const navigate = useNavigate();
   const { data: user, isLoading } = useGetMeQuery();
-
+  console.log(user);
   if (isLoading) return <div className={styles.loader}>Yuklanmoqda...</div>;
 
   return (

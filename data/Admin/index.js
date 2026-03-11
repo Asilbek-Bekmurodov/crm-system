@@ -40,3 +40,15 @@ export let adminMenu = [
     path: "/admin/settings",
   },
 ];
+
+export const TeacherTableHeaders = [
+  "T/r",
+  "FirsName",
+  "LastName",
+  "Age",
+  "Gender",
+  "Username",
+  "Role",
+  "Edit",
+  "Delete",
+];
