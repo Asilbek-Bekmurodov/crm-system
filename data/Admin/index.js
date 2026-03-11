@@ -5,7 +5,7 @@ export let adminMenu = [
   },
   {
     title: "Teacher",
-    path: "/admin/teacher",
+    path: "/admin/teachers",
   },
   {
     title: "Student",

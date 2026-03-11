@@ -9,7 +9,8 @@ import { toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 function CreateUserForm({ setIsOpen, editingUser }) {
-  const [userData, setUserData] = useState({
+  const emptyUser = {
+    id: undefined,
     firstname: "",
     lastname: "",
     age: "",
@@ -17,7 +18,9 @@ function CreateUserForm({ setIsOpen, editingUser }) {
     username: "",
     password: "",
     role: "",
-  });
+  };
+
+  const [userData, setUserData] = useState(emptyUser);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -25,13 +28,19 @@ function CreateUserForm({ setIsOpen, editingUser }) {
   const [editUser, { isLoading: isEditing }] = useEditUserMutation();
 
   useEffect(() => {
-    if (editingUser) {
-      setUserData({
+    if (!editingUser) {
+      setUserData(emptyUser);
+      return;
+    }
+
+    setUserData((prev) => {
+      if (prev.id === editingUser.id) return prev;
+      return {
         ...editingUser,
         password: "",
-      });
-    }
-  }, [editingUser]);
+      };
+    });
+  }, [editingUser?.id]);
 
   function handleChange(e) {
     setUserData((state) => ({
