@@ -1,16 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import styles from "./Dashboard.module.css";
 import { HiOutlineLogout } from "react-icons/hi";
 import { LayoutDashboard, Menu, X } from "lucide-react";
 import ProfileIcon from "../../ui/ProfileIcon/ProfileIcon";
 import { useDispatch } from "react-redux";
-import { logOut } from "../../app/features/authSlice";
+import { getOrgId, logOut } from "../../app/features/authSlice";
+import { useGetMeQuery } from "../../app/services/userApi";
 
 function Dashboard({ menuData }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { data: user } = useGetMeQuery();
+  useEffect(() => {
+    dispatch(getOrgId(user?.organizationId));
+  }, [user]);
 
   const handleLogout = () => {
     dispatch(logOut());
