@@ -3,10 +3,10 @@ export const superAdminMenu = [
     title: "Organizations",
     path: "/super-admin/organizations/",
   },
-  {
-    title: "Users",
-    path: "/super-admin",
-  },
+  // {
+  //   title: "Users",
+  //   path: "/super-admin",
+  // },
 ];
 
 export const OrganizationTableHeaders = [

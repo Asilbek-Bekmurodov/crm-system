@@ -19,7 +19,7 @@ import Message from "./pages/admin/Message/Message";
 import Profile from "./pages/admin/Profile/Profile";
 import Settings from "./pages/admin/Settings/Settings";
 import OrganizationDetail from "./pages/superAdmin/OrganizationDetail/OrganizationDetail";
-// import Teachers from "./pages/admin/Teachers/Teachers";
+import Teachers from "./pages/admin/Teachers/Teachers";
 
 function App() {
   return (
@@ -27,11 +27,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Public />} />
         <Route path="/auth" element={<Auth />} />
-
         <Route path="/profile" element={<Profile />} />
 
         <Route path="/super-admin" element={<SuperAdmin />}>
-          <Route index element={<All />} />
+          {/* <Route index element={<All />} /> */}
           <Route path="organizations" element={<Organization />} />
           <Route path="organizations/:id" element={<OrganizationDetail />} />
           <Route path="profile" element={<Profile />} />
@@ -44,7 +43,7 @@ function App() {
         </Route>
 
         <Route path="/admin" element={<Admin />}>
-          {/* <Route path="teachers" element={<Teachers />} /> */}
+          <Route path="teachers" element={<Teachers />} />
           <Route path="attendance" element={<Attendance />} />
           <Route path="student" element={<Student />} />
           <Route path="dashboard" element={<Dashboard />} />

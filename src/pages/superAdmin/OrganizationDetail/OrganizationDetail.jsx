@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react"; // useEffect qo'shildi
+import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useGetOrganizationByIdQuery } from "../../../app/services/organizationApi";
 import { useGetPermissionsQuery } from "../../../app/services/permissionsApi";
@@ -8,6 +8,7 @@ import styles from "./OrganizationDetail.module.css";
 import {
   useCreateUserMutation,
   useDeleteUserMutation,
+  useEditUserMutation,
   useGetUserQuery,
 } from "../../../app/services/userApi";
 import { AdminTableHeaders } from "../../../../data/superAdmin";
@@ -43,28 +44,11 @@ function OrganizationDetail() {
 
   const [deleteAdmin, { isLoading: isDeleting }] = useDeleteUserMutation();
   const [createAdmin, { isLoading: isCreating }] = useCreateUserMutation();
-
+  const [editAdmin] = useEditUserMutation();
   const [formData, setFormData] = useState({
     ...initialFormState,
     organizationId: id,
   });
-
-  // 5. Edit qo'shish (EditingUser o'zgarganda formani to'ldirish)
-  useEffect(() => {
-    if (editingUser) {
-      setFormData({
-        username: editingUser.username || "",
-        firstname: editingUser.firstname || "",
-        lastname: editingUser.lastname || "",
-        password: "", // Xavfsizlik uchun parolni bo'sh qoldiramiz
-        role: editingUser.role || "ADMIN",
-        organizationId: id,
-        permissions: editingUser.permissions || [],
-      });
-    } else {
-      setFormData({ ...initialFormState, organizationId: id });
-    }
-  }, [editingUser, id]);
 
   // 6. Filterni to'g'ri ishlatish
   const filteredData = useMemo(() => {
@@ -86,6 +70,7 @@ function OrganizationDetail() {
         await deleteAdmin({ id, query: "admins" }).unwrap();
         toast.success("Muvaffaqiyatli o'chirildi");
       } catch (e) {
+        console.log(e);
         toast.error("O'chirishda xatolik yuz berdi");
       }
     }
@@ -95,6 +80,15 @@ function OrganizationDetail() {
     const user = admins?.content?.find((u) => u.id === id);
     if (user) {
       setEditingUser(user);
+      setFormData({
+        username: user.username || "",
+        firstname: user.firstname || "",
+        lastname: user.lastname || "",
+        password: "", // Xavfsizlik uchun parolni bo'sh qoldiramiz
+        role: user.role || "ADMIN",
+        organizationId: id,
+        permissions: user.permissions || [],
+      });
       setIsOpen(true);
     }
   }
@@ -108,7 +102,10 @@ function OrganizationDetail() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      console.log(prev);
+      return { ...prev, [name]: value };
+    });
   };
 
   function handleCheckboxChange(e) {
@@ -138,11 +135,20 @@ function OrganizationDetail() {
     }
 
     try {
-      // Bu yerda Create yoki Update logikasi bo'ladi
-      await createAdmin({
-        query: "admins",
-        data: formData,
-      }).unwrap();
+      if (editingUser) {
+        const payload = { ...formData };
+        if (!payload.password) delete payload.password;
+        await editAdmin({
+          query: "admins",
+          data: payload,
+          id: editingUser.id,
+        }).unwrap();
+      } else {
+        await createAdmin({
+          query: "admins",
+          data: formData,
+        }).unwrap();
+      }
 
       toast.success(editingUser ? "Admin tahrirlandi!" : "Admin yaratildi!");
 
@@ -167,6 +173,7 @@ function OrganizationDetail() {
           className={styles.createBtn}
           onClick={() => {
             setEditingUser(null); // Yangi yaratish uchun editni tozalash
+            setFormData({ ...initialFormState, organizationId: id });
             setIsOpen(true);
           }}
         >
@@ -209,7 +216,10 @@ function OrganizationDetail() {
         isOpen={isOpen}
         setIsOpen={(value) => {
           setIsOpen(value);
-          if (!value) setEditingUser(null);
+          if (!value) {
+            setEditingUser(null);
+            setFormData({ ...initialFormState, organizationId: id });
+          }
         }}
         title={editingUser ? "Edit User" : "Create User"}
       >
