@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import styles from "./CreateTeacher.module.css";
 import { Eye, EyeOff } from "lucide-react";
+import styles from "./CreateStudent.module.css";
+import { useState } from "react";
 
-function CreateTeacher({
+function CreateStudent({
   handleSubmit,
   formData,
   handleInputChange,
@@ -144,11 +144,11 @@ function CreateTeacher({
             className={styles.submitBtn}
             disabled={isCreating}
           >
-            {isCreating ? "Saqlanmoqda..." : "Adminni saqlash"}
+            {isCreating ? "Saqlanmoqda..." : "Studentni saqlash"}
           </button>
         </div>
       </form>
     </div>
   );
 }
-export default CreateTeacher;
+export default CreateStudent;

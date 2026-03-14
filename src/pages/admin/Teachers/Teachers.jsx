@@ -2,7 +2,6 @@ import { useSelector } from "react-redux";
 import Modal from "../../../ui/Modal/Modal";
 import styles from "./Teacher.module.css";
 
-// import CreateTeacher from "./CreateTeacher";
 import { useMemo, useState } from "react";
 import {
   useCreateUserMutation,

@@ -1,4 +1,6 @@
+import { useState } from "react";
 import styles from "./CreateAdmin.module.css";
+import { Eye, EyeOff } from "lucide-react";
 
 function CreateAdmin({
   org,
@@ -10,6 +12,7 @@ function CreateAdmin({
   isCreating,
   handleCheckboxChange,
 }) {
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -61,16 +64,25 @@ function CreateAdmin({
           </div>
           <div className={styles.inputGroup}>
             <label className={styles.label}>Parol</label>
-            <input
-              name="password"
-              className={styles.inputField}
-              type="password"
-              required
-              placeholder="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              autoComplete="current-password"
-            />
+            <div className={styles.passwordWrapper}>
+              <input
+                name="password"
+                className={styles.inputField}
+                type={showPassword ? "text" : "password"}
+                required
+                placeholder="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                autoComplete="current-password"
+              />
+
+              <span
+                className={styles.eyeIcon}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </span>
+            </div>
           </div>
         </div>
 

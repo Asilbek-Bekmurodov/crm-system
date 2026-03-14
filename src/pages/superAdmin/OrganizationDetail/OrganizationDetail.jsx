@@ -170,7 +170,7 @@ function OrganizationDetail() {
         <button
           className={styles.createBtn}
           onClick={() => {
-            setEditingUser(null); // Yangi yaratish uchun editni tozalash
+            setEditingUser(null);
             setFormData({ ...initialFormState, organizationId: id });
             setIsOpen(true);
           }}

@@ -46,6 +46,24 @@
   border: 1px solid var(--border);
 }
 
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.inputField {
+  width: 100%;
+  padding-right: 35px;
+}
+
+.eyeIcon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
 .inputGroup {
   display: flex;
   flex-direction: column;
