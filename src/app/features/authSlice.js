@@ -4,6 +4,7 @@ let initialState = {
   role: null,
   token: localStorage.getItem("token") || null,
   user: null,
+  orgId: 0,
 };
 
 export const authSlice = createSlice({
@@ -26,8 +27,11 @@ export const authSlice = createSlice({
       localStorage.removeItem("role");
       localStorage.removeItem("user");
     },
+    getOrgId: (state, action) => {
+      state.orgId = action.payload;
+    },
   },
 });
 
-export const { setCredential, logOut } = authSlice.actions;
+export const { setCredential, logOut, getOrgId } = authSlice.actions;
 export default authSlice.reducer;

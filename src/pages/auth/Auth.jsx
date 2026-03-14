@@ -54,6 +54,10 @@ function Auth() {
         navigate("/admin");
       }
 
+      if (res.role === "ADMINISTRATOR") {
+        navigate("/administrator");
+      }
+
       toast.success("Xush kelibsiz !");
     } catch (e) {
       console.log(e);
