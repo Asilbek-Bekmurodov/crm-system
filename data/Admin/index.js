@@ -43,6 +43,10 @@ export let adminMenu = [
     title: "Settings",
     path: "/admin/settings",
   },
+  {
+    title: "Groups",
+    path: "/admin/groups",
+  },
 ];
 
 export const TeacherTableHeaders = [
@@ -77,6 +81,19 @@ export const AdministratorTableHeaders = [
   "Gender",
   "Username",
   "Role",
+  "Edit",
+  "Delete",
+];
+
+export const GroupTableHeaders = [
+  "T/r",
+  "id",
+  "name",
+  "description",
+  "subjectName",
+  "teacherName",
+  "price",
+  "lessonStartTime",
   "Edit",
   "Delete",
 ];

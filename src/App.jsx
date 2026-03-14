@@ -30,6 +30,7 @@ import Attendancee from "./pages/student/Attendance/Attendance";
 import PersonalInformation from "./pages/student/PersonalInformation/PersonalInformation";
 import Administrators from "./pages/admin/Administrator/Administrator";
 import Administrator from "./pages/administrator/Administrator";
+import Groups from "./pages/admin/Groups/Groups";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
           <Route path="teachers" element={<Teachers />} />
           <Route path="administrators" element={<Administrators />} />
           <Route path="attendance" element={<Attendance />} />
+          <Route path="groups" element={<Groups />} />
           <Route path="students" element={<Students />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="finance" element={<Finance />} />
