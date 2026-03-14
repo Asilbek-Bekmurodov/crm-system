@@ -4,6 +4,8 @@ import authApi from "./services/authApi";
 import userApi from "./services/userApi";
 import organizationApi from "./services/organizationApi";
 import permissionsApi from "./services/permissionsApi";
+import groupsApi from "./services/groupsApi";
+import subjectsApi from "./services/subjectsApi";
 
 const store = configureStore({
   reducer: {
@@ -12,13 +14,17 @@ const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [permissionsApi.reducerPath]: permissionsApi.reducer,
     [organizationApi.reducerPath]: organizationApi.reducer,
+    [groupsApi.reducerPath]: groupsApi.reducer,
+    [subjectsApi.reducerPath]: subjectsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(authApi.middleware)
       .concat(userApi.middleware)
       .concat(organizationApi.middleware)
-      .concat(permissionsApi.middleware),
+      .concat(permissionsApi.middleware)
+      .concat(groupsApi.middleware)
+      .concat(subjectsApi.middleware),
 });
 
 export default store;

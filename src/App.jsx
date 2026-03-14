@@ -28,6 +28,9 @@ import Test from "./pages/student/Test/Test";
 import Paymennt from "./pages/student/Payment/Payment";
 import Attendancee from "./pages/student/Attendance/Attendance";
 import PersonalInformation from "./pages/student/PersonalInformation/PersonalInformation";
+import Administrators from "./pages/admin/Administrator/Administrator";
+import Administrator from "./pages/administrator/Administrator";
+import Groups from "./pages/admin/Groups/Groups";
 
 function App() {
   return (
@@ -38,7 +41,6 @@ function App() {
         <Route path="/profile" element={<Profile />} />
 
         <Route path="/super-admin" element={<SuperAdmin />}>
-          {/* <Route index element={<All />} /> */}
           <Route path="organizations" element={<Organization />} />
           <Route path="organizations/:id" element={<OrganizationDetail />} />
           <Route path="profile" element={<Profile />} />
@@ -52,7 +54,9 @@ function App() {
 
         <Route path="/admin" element={<Admin />}>
           <Route path="teachers" element={<Teachers />} />
+          <Route path="administrators" element={<Administrators />} />
           <Route path="attendance" element={<Attendance />} />
+          <Route path="groups" element={<Groups />} />
           <Route path="students" element={<Students />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="finance" element={<Finance />} />
@@ -64,12 +68,19 @@ function App() {
         </Route>
         <Route path="/student" element={<Student />}>
           <Route path="subjects" element={<Subject />} />
-          <Route  path="home" element={<Homes/>}/>
+          <Route path="home" element={<Homes />} />
           <Route path="lessons" element={<LessonSchedule />} />
           <Route path="test" element={<Test />} />
           <Route path="payment" element={<Paymennt />} />
           <Route path="attendance" element={<Attendancee />} />
-          <Route path="personal-information" element={<PersonalInformation />} />
+          <Route
+            path="personal-information"
+            element={<PersonalInformation />}
+          />
+        </Route>
+
+        <Route path="/administrator" element={<Administrator />}>
+          <Route path="home" element={<Homes />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

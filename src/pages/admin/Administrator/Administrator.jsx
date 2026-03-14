@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import Modal from "../../../ui/Modal/Modal";
-import styles from "./Teacher.module.css";
-
+import styles from "./Administrator.module.css";
 import { useMemo, useState } from "react";
 import {
   useCreateUserMutation,
@@ -11,29 +10,33 @@ import {
 } from "../../../app/services/userApi";
 import { useGetPermissionsQuery } from "../../../app/services/permissionsApi";
 import { toast } from "react-toastify";
-import { TeacherTableHeaders } from "../../../../data/Admin";
-import CreateTeacher from "./CreateTeacher";
+import { AdministratorTableHeaders } from "../../../../data/Admin";
 import FirstLoader from "../../../ui/FirstLoader/FirstLoader";
 import Table from "../../../ui/Table/Table";
+import CreateAdministrator from "./CreateAdministrator";
 
 const initialFormState = {
   username: "",
   firstname: "",
   lastname: "",
   password: "",
-  role: "TEACHER",
+  role: "ADMINISTRATOR",
   organizationId: "",
   permissions: [],
 };
 
-function Teachers() {
+function Administrators() {
   const id = useSelector((state) => state.auth.orgId);
 
   const [isOpen, setIsOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: teachers, isLoading, isError } = useGetUserQuery("teachers");
+  const {
+    data: administrators,
+    isLoading,
+    isError,
+  } = useGetUserQuery("administrators");
   const {
     data: permissions,
     isLoading: isPerLoading,
@@ -50,8 +53,7 @@ function Teachers() {
 
   // 6. Filterni to'g'ri ishlatish
   const filteredData = useMemo(() => {
-
-    const list = teachers?.content || [];
+    const list = administrators || [];
     if (!searchTerm) return list;
 
     const searchStr = searchTerm.toLowerCase();
@@ -61,12 +63,12 @@ function Teachers() {
         user.lastname?.toLowerCase().includes(searchStr) ||
         user.username?.toLowerCase().includes(searchStr),
     );
-  }, [teachers, searchTerm]);
+  }, [administrators, searchTerm]);
 
   async function handleDelete(id) {
     if (window.confirm("Haqiqatdan ham o'chirmoqchimisiz?")) {
       try {
-        await deleteAdmin({ id, query: "teachers" }).unwrap();
+        await deleteAdmin({ id, query: "administrators" }).unwrap();
         toast.success("Muvaffaqiyatli o'chirildi");
       } catch (e) {
         console.log(e);
@@ -76,7 +78,7 @@ function Teachers() {
   }
 
   function handleEdit(id) {
-    const user = teachers?.content?.find((u) => u.id === id);
+    const user = administrators?.find((u) => u.id === id);
     if (user) {
       setEditingUser(user);
       setFormData({
@@ -84,7 +86,7 @@ function Teachers() {
         firstname: user.firstname || "",
         lastname: user.lastname || "",
         password: "", // Xavfsizlik uchun parolni bo'sh qoldiramiz
-        role: user.role || "TEACHER",
+        role: user.role || "ADMINISTRATOR",
         organizationId: id,
         permissions: user.permissions || [],
       });
@@ -138,19 +140,19 @@ function Teachers() {
         const payload = { ...formData };
         if (!payload.password) delete payload.password;
         await editAdmin({
-          query: "teachers",
+          query: "administrators",
           data: payload,
           id: editingUser.id,
         }).unwrap();
       } else {
         await createAdmin({
-          query: "teachers",
+          query: "administrators",
           data: formData,
         }).unwrap();
       }
 
       toast.success(
-        editingUser ? "Teacher tahrirlandi!" : "Teacher yaratildi!",
+        editingUser ? "Administrator tahrirlandi!" : "Administrator yaratildi!",
       );
 
       // 1. Forma tozalanishi va 4. Modal yopilishi
@@ -168,7 +170,7 @@ function Teachers() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <h1>Teachers</h1>
+        <h1>Administrators</h1>
         <button
           className={styles.createBtn}
           onClick={() => {
@@ -177,7 +179,7 @@ function Teachers() {
             setIsOpen(true);
           }}
         >
-          + Create Teacher
+          + Create Administrator
         </button>
       </div>
 
@@ -195,7 +197,7 @@ function Teachers() {
 
       <div className={styles.tableContainer}>
         <Table
-          headers={TeacherTableHeaders}
+          headers={AdministratorTableHeaders}
           data={filteredData} // 6. Filterlangan ma'lumot uzatildi
           onDelete={handleDelete}
           onEdit={handleEdit}
@@ -221,9 +223,9 @@ function Teachers() {
             setFormData({ ...initialFormState, organizationId: id });
           }
         }}
-        title={editingUser ? "Edit Teacher" : "Create Teacher"}
+        title={editingUser ? "Edit Administrator" : "Create Administrator"}
       >
-        <CreateTeacher
+        <CreateAdministrator
           handleSubmit={handleSubmit}
           formData={formData}
           handleInputChange={handleInputChange}
@@ -236,4 +238,4 @@ function Teachers() {
     </div>
   );
 }
-export default Teachers;
+export default Administrators;

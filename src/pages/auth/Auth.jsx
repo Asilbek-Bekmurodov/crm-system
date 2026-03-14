@@ -54,8 +54,12 @@ function Auth() {
         navigate("/admin");
       }
 
-        if (res.role === "STUDENT") {
+      if (res.role === "STUDENT") {
         navigate("/student");
+      }
+
+      if (res.role === "ADMINISTRATOR") {
+        navigate("/administrator");
       }
 
       toast.success("Xush kelibsiz !");

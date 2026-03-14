@@ -12,6 +12,10 @@ export let adminMenu = [
     path: "/admin/students",
   },
   {
+    title: "Administrator",
+    path: "/admin/administrators",
+  },
+  {
     title: "Attendance",
     path: "/admin/attendance",
   },
@@ -39,6 +43,10 @@ export let adminMenu = [
     title: "Settings",
     path: "/admin/settings",
   },
+  {
+    title: "Groups",
+    path: "/admin/groups",
+  },
 ];
 
 export const TeacherTableHeaders = [
@@ -53,7 +61,6 @@ export const TeacherTableHeaders = [
   "Delete",
 ];
 
-
 export const StudentTableHeaders = [
   "T/r",
   "FirsName",
@@ -62,6 +69,31 @@ export const StudentTableHeaders = [
   "Gender",
   "Username",
   "Role",
+  "Edit",
+  "Delete",
+];
+
+export const AdministratorTableHeaders = [
+  "T/r",
+  "FirsName",
+  "LastName",
+  "Age",
+  "Gender",
+  "Username",
+  "Role",
+  "Edit",
+  "Delete",
+];
+
+export const GroupTableHeaders = [
+  "T/r",
+  "id",
+  "name",
+  "description",
+  "subjectName",
+  "teacherName",
+  "price",
+  "lessonStartTime",
   "Edit",
   "Delete",
 ];
