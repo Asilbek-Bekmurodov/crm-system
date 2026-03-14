@@ -12,6 +12,10 @@ export let adminMenu = [
     path: "/admin/students",
   },
   {
+    title: "Administrator",
+    path: "/admin/administrators",
+  },
+  {
     title: "Attendance",
     path: "/admin/attendance",
   },
@@ -53,8 +57,19 @@ export const TeacherTableHeaders = [
   "Delete",
 ];
 
-
 export const StudentTableHeaders = [
+  "T/r",
+  "FirsName",
+  "LastName",
+  "Age",
+  "Gender",
+  "Username",
+  "Role",
+  "Edit",
+  "Delete",
+];
+
+export const AdministratorTableHeaders = [
   "T/r",
   "FirsName",
   "LastName",
