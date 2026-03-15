@@ -110,3 +110,13 @@ export const SubjectTableHeaders = [
   "Delete",
   "Open",
 ];
+
+export const SubjectTopicTableHeaders = [
+  "T/R",
+  "name",
+  "description",
+  "orderNumber",
+  "Edit",
+  "Delete",
+  "Open",
+];

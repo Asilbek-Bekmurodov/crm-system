@@ -20,12 +20,18 @@ const initialFormState = {
   description: "",
 };
 
+import { useNavigate, useLocation } from "react-router-dom";
+
 function Subject() {
   const orgId = useSelector((state) => state.auth.orgId);
+
 
   const [isOpen, setIsOpen] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  
+  const navigate = useNavigate();
+  const location = useLocation();
   const { data: subjects, isLoading, isError } = useGetSubjectsQuery("subjects");
 
   const [deleteSubjects, { isLoading: isDeleting }] = useDeleteSubjectsMutation();
@@ -72,6 +78,12 @@ function Subject() {
       });
       setIsOpen(true);
     }
+  }
+
+  function handleNavigate(subject) {
+    const currentPath = location.pathname;
+    const path = currentPath.endsWith('/') ? `${currentPath}${subject.id}` : `${currentPath}/${subject.id}`;
+    navigate(path);
   }
 
   const handleInputChange = (e) => {
@@ -142,6 +154,7 @@ function Subject() {
           data={filteredData}
           onDelete={handleDelete}
           onEdit={handleEdit}
+          onNavigate={handleNavigate}
           renderRow={({
             id,
             name,

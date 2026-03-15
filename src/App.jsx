@@ -20,6 +20,7 @@ import Settings from "./pages/admin/Settings/Settings";
 import OrganizationDetail from "./pages/superAdmin/OrganizationDetail/OrganizationDetail";
 import Teachers from "./pages/admin/Teachers/Teachers";
 import Subject from "./pages/student/Subject/Subject";
+import SubjectTopics from "./pages/student/Subject/SubjectTopics";
 import Student from "./pages/student/Student";
 import Students from "./pages/admin/Student/Student";
 import Homes from "./pages/student/Home/Home";
@@ -58,6 +59,7 @@ function App() {
           <Route path="attendance" element={<Attendance />} />
           <Route path="groups" element={<Groups />} />
           <Route path="subject" element={<Subject />} />
+          <Route path="subject/:id" element={<SubjectTopics />} />
           <Route path="students" element={<Students />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="finance" element={<Finance />} />
@@ -69,6 +71,7 @@ function App() {
         </Route>
         <Route path="/student" element={<Student />}>
           <Route path="subjects" element={<Subject />} />
+          <Route path="subjects/:id" element={<SubjectTopics />} />
           <Route path="home" element={<Homes />} />
           <Route path="lessons" element={<LessonSchedule />} />
           <Route path="test" element={<Test />} />
