@@ -20,7 +20,7 @@ function CreateSubject({
       <form onSubmit={handleSubmit}>
         <div className={styles.inputGrid}>
           <div className={styles.inputGroup}>
-            <label className={styles.label}>Group name</label>
+            <label className={styles.label}>Subject name</label>
             <input
               name="name"
               className={styles.inputField}
@@ -28,7 +28,7 @@ function CreateSubject({
               required
               value={formData.name ?? ""}
               onChange={handleInputChange}
-              placeholder="Group name"
+              placeholder="Subject name"
             />
           </div>
           <div className={styles.inputGroup}>
@@ -51,7 +51,7 @@ function CreateSubject({
             className={styles.submitBtn}
             disabled={isCreating}
           >
-            {isCreating ? "Loading..." : "Save group"}
+            {isCreating ? "Loading..." : "Save subject"}
           </button>
         </div>
       </form>
