@@ -23,7 +23,8 @@ body {
 
 .container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: var(--bg-main);
 }
 
@@ -52,6 +53,25 @@ body {
 .topSide {
   flex: 1;
   padding: 24px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidebar Custom Scrollbar */
+.topSide::-webkit-scrollbar {
+  width: 4px;
+}
+.topSide::-webkit-scrollbar-track {
+  background: transparent;
+}
+.topSide::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.4);
+  border-radius: 10px;
+}
+.topSide::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary);
 }
 
 .logo {
@@ -152,7 +172,23 @@ body {
 .main {
   flex: 1;
   padding: 32px;
-  overflow-x: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar for Dashboard Main */
+.main::-webkit-scrollbar {
+  width: 6px;
+}
+.main::-webkit-scrollbar-track {
+  background: transparent;
+}
+.main::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.4);
+  border-radius: 10px;
+}
+.main::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary);
 }
 
 .logoLink {
