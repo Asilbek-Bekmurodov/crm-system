@@ -51,6 +51,10 @@ export let adminMenu = [
     title: "Groups",
     path: "/admin/groups",
   },
+  {
+    title: "Subject",
+    path: "/admin/subject",
+  },
 ];
 
 export const TeacherTableHeaders = [
@@ -100,4 +104,13 @@ export const GroupTableHeaders = [
   "lessonStartTime",
   "Edit",
   "Delete",
+];
+
+export const SubjectTableHeaders = [
+  "T/r",
+  "name",
+  "description",
+  "Edit",
+  "Delete",
+  "Open",
 ];
