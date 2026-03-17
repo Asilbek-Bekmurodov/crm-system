@@ -1,136 +1,146 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useGetMeQuery } from "../../../app/services/userApi";
-import {
-  ArrowLeft,
-  User,
-  Shield,
-  Image,
-  CreditCard,
-  Bell,
-  Globe,
-  LogOut,
-  Check,
-} from "lucide-react";
+import { useNavigate, NavLink, Outlet } from "react-router-dom";
+import { ArrowLeft, LogOut, Loader2 } from "lucide-react";
+import { Toaster } from "react-hot-toast";
 import styles from "./Profile.module.css";
-import defaultImg from "../../../assets/1.jpg";
+import { useGetMeQuery } from "../../../app/services/userApi";
+import { profileMenu } from "../../../../data/Profile/Profile";
+import { HiOutlineLogout } from "react-icons/hi";
+
+const BASE_URL = "https://crmsystem-production-d4ee.up.railway.app";
+const DEFAULT_AVATAR = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
 function Profile() {
   const navigate = useNavigate();
-  const { data: user, isLoading } = useGetMeQuery();
-  console.log(user);
-  if (isLoading) return <div className={styles.loader}>Yuklanmoqda...</div>;
+
+  const token = localStorage.getItem("token");
+
+  const {
+    data: user,
+    isLoading,
+    isError,
+  } = useGetMeQuery(undefined, {
+    skip: !token || token === "undefined",
+  });
+
+  const handleBack = () => {
+    const userRole = user?.role?.toUpperCase();
+    if (userRole) {
+      const rolePaths = {
+        SUPER_ADMIN: "/super-admin",
+        ADMIN: "/admin",
+        ADMINISTRATOR: "/administrator",
+        TEACHER: "/teacher",
+        STUDENT: "/student",
+      };
+      const targetPath = rolePaths[userRole];
+      targetPath ? navigate(targetPath) : navigate(-1);
+    } else {
+      navigate(-1);
+    }
+  };
+
+  const getAvatarSrc = () => {
+    if (user?.profilePictureUrl) {
+      return `${BASE_URL}${user.profilePictureUrl}?t=${new Date().getTime()}`;
+    }
+    return DEFAULT_AVATAR;
+  };
+
+   const handleLogout = () => {
+    dispatch(LogOut());
+    navigate("/auth");
+  };
+
+  if (isLoading) {
+    return (
+      <div className={styles.loaderPage}>
+        <div className={styles.loaderContent}>
+          <Loader2 className={styles.spinnerIcon} size={50} />
+          <p>Profilingiz yuklanmoqda...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || (!user && !isLoading)) {
+    return (
+      <div className={styles.loaderPage}>
+        <div className={styles.loaderContent}>
+          <p>Ma'lumotlarni yuklashda xatolik yuz berdi.</p>
+          <button onClick={handleLogout} className={styles.logoutBtn}>
+            Qayta kirish
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
-      {/* SIDEBAR */}
+      <Toaster position="top-right" />
+
       <aside className={styles.sidebar}>
         <div className={styles.profileBox}>
           <div className={styles.avatarWrapper}>
-            <img src={user?.profilePictureUrl || defaultImg} alt="profile" />
+            <img
+              key={user?.profilePictureUrl}
+              src={getAvatarSrc()}
+              alt="profile"
+              className={styles.sidebarAvatar}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = DEFAULT_AVATAR;
+              }}
+            />
             <div className={styles.activeStatus}></div>
           </div>
-          <h3>
+          <h3 className={styles.userName}>
             {user?.firstname} {user?.lastname}
           </h3>
-          <p className={styles.userEmail}>{user?.username}</p>
+          <p className={styles.userEmail}>@{user?.username}</p>
         </div>
 
         <nav className={styles.navMenu}>
           <ul className={styles.menu}>
-            <li className={`${styles.menuItem} ${styles.active}`}>
-              <User size={18} /> Profil sozlamalari
-            </li>
-            <li className={styles.menuItem}>
-              <Image size={18} /> Profil rasmi
-            </li>
-            <li className={styles.menuItem}>
-              <Shield size={18} /> Xavfsizlik
-            </li>
-            <li className={styles.menuItem}>
-              <CreditCard size={18} /> To'lovlar
-            </li>
-            <li className={styles.menuItem}>
-              <Bell size={18} /> Bildirishnomalar
-            </li>
+            {profileMenu.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <li key={index}>
+                  <NavLink
+                    to={item.path}
+                    className={({ isActive }) =>
+                      isActive
+                        ? `${styles.menuItem} ${styles.active}`
+                        : styles.menuItem
+                    }
+                  >
+                    <Icon size={18} /> {item.title}
+                  </NavLink>
+                </li>
+              );
+            })}
           </ul>
 
           <div className={styles.sidebarFooter}>
-            <button className={styles.logoutBtn}>
-              <LogOut size={18} /> Chiqish
-            </button>
+             <button onClick={handleLogout} className={styles.logoutBtn}>
+            <HiOutlineLogout size={20} />
+            <span>Chiqish</span>
+          </button>
           </div>
         </nav>
       </aside>
 
-      {/* MAIN CONTENT */}
       <main className={styles.content}>
-        {/* Ortga qaytish tepada alohida */}
         <div className={styles.topBar}>
-          <button className={styles.backBtn} onClick={() => navigate(-1)}>
-            <ArrowLeft size={18} /> Ortga qaytish
+          <button className={styles.backBtn} onClick={handleBack}>
+            <ArrowLeft size={18} /> Asosiy panelga qaytish
           </button>
         </div>
 
-        <div className={styles.header}>
-          <h2>Shaxsiy ma'lumotlar</h2>
-          <p>Profilingizni boshqaring va ma'lumotlarni yangilang</p>
+        <div className={styles.dynamicWrapper}>
+          <Outlet context={{ user }} />
         </div>
-
-        <section className={styles.formCard}>
-          <div className={styles.formGrid}>
-            <div className={styles.group}>
-              <label>Ism</label>
-              <input
-                type="text"
-                defaultValue={user?.firstname}
-                placeholder="Ism"
-              />
-            </div>
-
-            <div className={styles.group}>
-              <label>Familiya</label>
-              <input
-                type="text"
-                defaultValue={user?.lastname}
-                placeholder="Familiya"
-              />
-            </div>
-
-            <div className={`${styles.group} ${styles.fullWidth}`}>
-              <label>Sarlavha (Headline)</label>
-              <input type="text" placeholder="Masalan: Fullstack Developer" />
-            </div>
-
-            <div className={`${styles.group} ${styles.fullWidth}`}>
-              <label>Biografiya</label>
-              <textarea
-                rows="4"
-                placeholder="O'zingiz haqingizda qisqacha ma'lumot..."
-              />
-            </div>
-
-            <div className={styles.group}>
-              <label>Til</label>
-              <select>
-                <option>O'zbekcha</option>
-                <option>English</option>
-                <option>Русский</option>
-              </select>
-            </div>
-
-            <div className={styles.group}>
-              <label>Veb-sayt</label>
-              <input type="text" placeholder="https://example.com" />
-            </div>
-          </div>
-
-          <div className={styles.formFooter}>
-            <button className={styles.saveBtn}>
-              <Check size={18} /> Saqlash
-            </button>
-          </div>
-        </section>
       </main>
     </div>
   );
