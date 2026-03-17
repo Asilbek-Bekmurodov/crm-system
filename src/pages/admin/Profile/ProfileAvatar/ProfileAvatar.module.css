@@ -50,8 +50,40 @@
   border: 2px dashed #e2e8f0;
   background: #f7fafc;
   width: 100%;
+  min-height: 300px;
   display: flex;
   justify-content: center;
+  align-items: center;
+}
+
+.uploadArea {
+  width: 100%;
+  min-height: 300px;
+  padding: 24px;
+  color: #4a5568;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.uploadArea span {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.uploadArea small {
+  color: #718096;
+  max-width: 220px;
+  line-height: 1.5;
+}
+
+.fileInput {
+  display: none;
 }
 
 .infoBox {
@@ -71,6 +103,15 @@
   color: #2d3748;
   font-size: 18px;
   margin-bottom: 20px;
+}
+
+.previewCard {
+  justify-content: center;
+}
+
+.avatarPreview {
+  display: flex;
+  justify-content: center;
 }
 
 .avatarPreview img {

@@ -1,25 +1,96 @@
-import React, { useState } from "react";
-import Avatar from "react-avatar-edit";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { useUploadProfilePictureMutation } from "../../../../app/services/userApi";
-import { Check } from "lucide-react";
+import { Check, Upload } from "lucide-react";
 import styles from "./ProfileAvatar.module.css";
 
 function ProfileAvatar() {
   const [preview, setPreview] = useState(null);
+  const [selectedFileName, setSelectedFileName] = useState("");
+  const [isPreparing, setIsPreparing] = useState(false);
   const [uploadProfilePicture, { isLoading }] =
     useUploadProfilePictureMutation();
 
+  const createImage = (file) =>
+    new Promise((resolve, reject) => {
+      const imageUrl = URL.createObjectURL(file);
+      const image = new Image();
+
+      image.onload = () => {
+        URL.revokeObjectURL(imageUrl);
+        resolve(image);
+      };
+
+      image.onerror = () => {
+        URL.revokeObjectURL(imageUrl);
+        reject(new Error("Rasmni o'qib bo'lmadi"));
+      };
+
+      image.src = imageUrl;
+    });
+
+  const createCenteredSquarePreview = async (file) => {
+    const image = await createImage(file);
+    const size = Math.min(image.width, image.height);
+    const startX = (image.width - size) / 2;
+    const startY = (image.height - size) / 2;
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    canvas.width = 512;
+    canvas.height = 512;
+
+    context.drawImage(
+      image,
+      startX,
+      startY,
+      size,
+      size,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    return canvas.toDataURL("image/png");
+  };
+
   const dataURLtoBlob = (dataurl) => {
-    let arr = dataurl.split(","),
-      mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]),
-      n = bstr.length,
-      u8arr = new Uint8Array(n);
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n);
     }
     return new Blob([u8arr], { type: mime });
+  };
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Faqat rasm faylini tanlang");
+      return;
+    }
+
+    setIsPreparing(true);
+    setSelectedFileName(file.name);
+
+    try {
+      const nextPreview = await createCenteredSquarePreview(file);
+      setPreview(nextPreview);
+    } catch {
+      setPreview(null);
+      setSelectedFileName("");
+      toast.error("Rasmni tayyorlashda xatolik yuz berdi");
+    } finally {
+      setIsPreparing(false);
+      event.target.value = "";
+    }
   };
 
   const handleSave = async () => {
@@ -57,15 +128,25 @@ function ProfileAvatar() {
 
       <div className={styles.contentGrid}>
         <div className={styles.card}>
-          <Avatar
-            width={300}
-            height={300}
-            onCrop={(v) => setPreview(v)}
-            onClose={() => setPreview(null)}
-            label="Rasm tanlang"
-            labelStyle={{ color: "#718096", cursor: "pointer" }}
-            backgroundColor="#f7fafc"
-          />
+          <div className={styles.cropperContainer}>
+            <label className={styles.uploadArea}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className={styles.fileInput}
+              />
+              <Upload size={24} />
+              <span>Rasm tanlang</span>
+              <small>Rasm markazdan kvadrat ko'rinishda kesiladi</small>
+            </label>
+          </div>
+
+          <div className={styles.infoBox}>
+            {isPreparing
+              ? "Rasm tayyorlanmoqda..."
+              : selectedFileName || "PNG, JPG yoki WEBP fayl yuklang"}
+          </div>
         </div>
 
         {preview && (
@@ -77,9 +158,9 @@ function ProfileAvatar() {
             <button
               className={styles.saveButton}
               onClick={handleSave}
-              disabled={isLoading}
+              disabled={isLoading || isPreparing}
             >
-              {isLoading ? (
+              {isLoading || isPreparing ? (
                 <div className={styles.spinner}></div>
               ) : (
                 <>

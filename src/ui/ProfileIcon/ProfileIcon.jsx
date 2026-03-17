@@ -1,24 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetMeQuery } from "../../app/services/userApi";
+import { useDispatch } from "react-redux";
+import { logOut } from "../../app/features/authSlice";
 import styles from "./ProfileIcon.module.css";
-const BASE_URL = "https://crmsystem-production-d4ee.up.railway.app";
-const DEFAULT_AVATAR = "/default-avatar.png";
 
-function ProfileIcon() {
+const BASE_URL = "https://crmsystem-production-d4ee.up.railway.app";
+const DEFAULT_AVATAR =
+  "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+function ProfileIcon({ user, isLoading = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const dropdownRef = useRef(null);
-
-  const token = localStorage.getItem("token");
-
-  const {
-    data: user,
-    isLoading,
-    isError,
-  } = useGetMeQuery(undefined, {
-    skip: !token,
-  });
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -38,9 +32,8 @@ function ProfileIcon() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-    window.location.reload();
+    dispatch(logOut());
+    navigate("/auth");
   };
 
   const avatarSrc = user?.profilePictureUrl
@@ -56,7 +49,8 @@ function ProfileIcon() {
           src={avatarSrc}
           alt="User"
           onError={(e) => {
-            e.target.src = DEFAULT_AVATAR;
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = DEFAULT_AVATAR;
           }}
           className={styles.mainAvatar}
         />
@@ -71,7 +65,8 @@ function ProfileIcon() {
               className={styles.miniAvatar}
               alt="User"
               onError={(e) => {
-                e.target.src = DEFAULT_AVATAR;
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = DEFAULT_AVATAR;
               }}
             />
             <div className={styles.info}>

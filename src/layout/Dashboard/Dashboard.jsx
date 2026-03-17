@@ -12,11 +12,17 @@ function Dashboard({ menuData }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const token = localStorage.getItem("token");
 
-  const { data: user } = useGetMeQuery();
+  const { data: user, isLoading } = useGetMeQuery(undefined, {
+    skip: !token || token === "undefined",
+  });
+
   useEffect(() => {
-    dispatch(getOrgId(user?.organizationId));
-  }, [user]);
+    if (user?.organizationId) {
+      dispatch(getOrgId(user.organizationId));
+    }
+  }, [dispatch, user?.organizationId]);
 
   const handleLogout = () => {
     dispatch(logOut());
@@ -76,7 +82,7 @@ function Dashboard({ menuData }) {
           </button>
           <div className={styles.profileIcon}>
             <h1 className={styles.title}>Dashboard</h1>
-            <ProfileIcon />
+            <ProfileIcon user={user} isLoading={isLoading} />
           </div>
         </header>
 
