@@ -188,6 +188,7 @@ function Groups() {
                 <td>{teacherName}</td>
                 <td>{price}</td>
                 <td>{lessonStartTime}</td>
+                <td></td>
               </>
             );
           }}
