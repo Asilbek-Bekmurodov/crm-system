@@ -32,6 +32,11 @@ import PersonalInformation from "./pages/student/PersonalInformation/PersonalInf
 import Administrators from "./pages/admin/Administrator/Administrator";
 import Administrator from "./pages/administrator/Administrator";
 import Groups from "./pages/admin/Groups/Groups";
+import ProfileSettings from "./pages/admin/Profile/ProfileSettings/ProfileSettings";
+import ProfileAvatar from "./pages/admin/Profile/ProfileAvatar/ProfileAvatar";
+import ProfileSecurity from "./pages/admin/Profile/ProfileSecurity/ProfileSecurity";
+import ProfilePayments from "./pages/admin/Profile/ProfilePayments/ProfilePayments";
+import ProfileNotifications from "./pages/admin/Profile/ProfileNotifications/ProfileNotifications";
 
 function App() {
   return (
@@ -39,7 +44,13 @@ function App() {
       <Routes>
         <Route path="/" element={<Public />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<Profile />}>
+          <Route index element={<ProfileSettings />} />
+          <Route path="avatar" element={<ProfileAvatar />} />
+          <Route path="security" element={<ProfileSecurity />} />
+          <Route path="payments" element={<ProfilePayments />} />
+          <Route path="notifications" element={<ProfileNotifications />} />
+        </Route>
 
         <Route path="/super-admin" element={<SuperAdmin />}>
           <Route path="organizations" element={<Organization />} />
@@ -66,7 +77,7 @@ function App() {
           <Route path="notice" element={<Notice />} />
           <Route path="calendar" element={<Calendar />} />
           <Route path="message" element={<Message />} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="profile/*" element={<Profile />} />
           <Route path="settings" element={<Settings />} />
         </Route>
         <Route path="/student" element={<Student />}>

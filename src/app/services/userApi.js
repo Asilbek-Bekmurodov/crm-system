@@ -5,27 +5,34 @@ const userApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "https://crmsystem-production-d4ee.up.railway.app/api",
     prepareHeaders: (headers, { getState }) => {
-      const state = getState?.();
+      const state = getState();
       const token = state?.auth?.token || localStorage.getItem("token");
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
-
       return headers;
     },
   }),
   tagTypes: ["user"],
   endpoints: (builder) => ({
-    getUser: builder.query({
-      query: (query) => ({
-        url: `/${query}`,
+    getMe: builder.query({
+      query: () => "/users/me",
+      providesTags: ["user"],
+    }),
+    uploadProfilePicture: builder.mutation({
+      query: (formData) => ({
+        url: "/users/profile-picture",
+        method: "POST",
+        body: formData,
       }),
+      invalidatesTags: ["user"],
+    }),
+    getUser: builder.query({
+      query: (query) => `/${query}`,
       providesTags: ["user"],
     }),
     getByRole: builder.query({
-      query: (role) => ({
-        url: `/users/role/${role}`,
-      }),
+      query: (role) => `/users/role/${role}`,
     }),
     createUser: builder.mutation({
       query: ({ data, query }) => ({
@@ -50,19 +57,17 @@ const userApi = createApi({
       }),
       invalidatesTags: ["user"],
     }),
-    getMe: builder.query({
-      query: () => "/users/me",
-      providesTags: ["user"],
-    }),
   }),
 });
 
 export const {
   useGetUserQuery,
+  useUploadProfilePictureMutation,
   useCreateUserMutation,
   useDeleteUserMutation,
   useEditUserMutation,
   useGetByRoleQuery,
   useGetMeQuery,
 } = userApi;
+
 export default userApi;

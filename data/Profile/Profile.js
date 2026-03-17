@@ -1,8 +1,29 @@
-export let profileMenuData = [
-  { title: "Profile", path: "/profile" },
-  { title: "Photo", path: "/profile/photo" },
-  { title: "Account Security", path: "/profile/security" },
-  { title: "Subscriptions", path: "/profile/subscriptions" },
-  { title: "Payment methods", path: "/profile/payments" },
-  { title: "Privacy", path: "/profile/privacy" },
+import { User, Image, Shield, CreditCard, Bell } from "lucide-react";
+
+export const profileMenu = [
+  {
+    title: "Profil sozlamalari",
+    path: "",
+    icon: User,
+  },
+  {
+    title: "Profil rasmi",
+    path: "avatar",
+    icon: Image,
+  },
+  {
+    title: "Xavfsizlik",
+    path: "security",
+    icon: Shield,
+  },
+  {
+    title: "To'lovlar",
+    path: "payments",
+    icon: CreditCard,
+  },
+  {
+    title: "Bildirishnomalar",
+    path: "notifications",
+    icon: Bell,
+  },
 ];

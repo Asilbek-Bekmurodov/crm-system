@@ -39,52 +39,6 @@
   border: 3px solid #f4f7fe;
 }
 
-.loaderPage {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #ffffff;
-}
-
-.loaderContent {
-  text-align: center;
-  color: #4f46e5;
-}
-
-.spinnerIcon {
-  animation: rotate 1s linear infinite;
-  margin-bottom: 15px;
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.userName {
-  color: #111827; /* To'liq qora emas, juda to'q kulrang (professional) */
-  font-weight: 700;
-  font-size: 18px;
-}
-
-.userRole {
-  color: #6b7280;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Sidebar va boshqa qismlar uchun oq fonli toza dizayn */
-.sidebar {
-  background: #ffffff;
-  border-right: 1px solid #e5e7eb;
-}
-
 .activeStatus {
   position: absolute;
   bottom: 5px;
@@ -157,7 +111,6 @@
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 130px;
 }
 
 /* CONTENT */

@@ -132,7 +132,7 @@ function Subject() {
             setIsOpen(true);
           }}
         >
-          + Create Group
+          + Create Subject
         </button>
       </div>
 

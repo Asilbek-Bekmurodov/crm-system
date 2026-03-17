@@ -16,10 +16,6 @@ export let adminMenu = [
     path: "/admin/administrators",
   },
   {
-    title: "Administrator",
-    path: "/admin/administrators",
-  },
-  {
     title: "Attendance",
     path: "/admin/attendance",
   },
