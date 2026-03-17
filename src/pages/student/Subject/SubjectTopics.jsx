@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styles from "./Subject.module.css";
 import Table from "../../../ui/Table/Table";
 import { useState, useMemo } from "react";
@@ -22,7 +22,6 @@ const initialFormState = {
 
 function SubjectTopics() {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -31,9 +30,13 @@ function SubjectTopics() {
     ...initialFormState,
     subjectId: Number(id),
   });
-  
-  const { data: topics, isLoading, isError } = useGetSubjectsQuery(`topics/subject/${id}`);
-  
+
+  const {
+    data: topics,
+    isLoading,
+    isError,
+  } = useGetSubjectsQuery(`topics/subject/${id}`);
+
   const [deleteTopic, { isLoading: isDeleting }] = useDeleteSubjectsMutation();
   const [createTopic, { isLoading: isCreating }] = useCreateSubjectsMutation();
   const [editTopic] = useEditSubjectsMutation();
@@ -46,7 +49,7 @@ function SubjectTopics() {
     return list.filter(
       (item) =>
         item.name?.toLowerCase().includes(searchStr) ||
-        item.description?.toLowerCase().includes(searchStr)
+        item.description?.toLowerCase().includes(searchStr),
     );
   }, [topics, searchTerm]);
 
@@ -56,6 +59,7 @@ function SubjectTopics() {
         await deleteTopic({ id: topicId, query: "topics" }).unwrap();
         toast.success("Muvaffaqiyatli o'chirildi");
       } catch (err) {
+        console.log(err);
         toast.error("O'chirishda xatolik yuz berdi");
       }
     }
@@ -85,7 +89,6 @@ function SubjectTopics() {
     try {
       const payload = {
         ...formData,
-        orderNumber: Number(formData.orderNumber),
         subjectId: Number(id),
       };
 

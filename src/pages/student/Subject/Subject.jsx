@@ -156,7 +156,6 @@ function Subject() {
           onEdit={handleEdit}
           onNavigate={handleNavigate}
           renderRow={({
-            id,
             name,
             description,
           }) => {

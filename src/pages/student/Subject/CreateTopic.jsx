@@ -43,7 +43,7 @@ function CreateTopic({
               onChange={handleInputChange}
             />
           </div>
-          <div className={styles.inputGroup}>
+          {/* <div className={styles.inputGroup}>
             <label className={styles.label}>Order Number</label>
             <input
               name="orderNumber"
@@ -54,7 +54,7 @@ function CreateTopic({
               value={formData.orderNumber ?? ""}
               onChange={handleInputChange}
             />
-          </div>
+          </div> */}
         </div>
 
         <div className={styles.formFooter}>
