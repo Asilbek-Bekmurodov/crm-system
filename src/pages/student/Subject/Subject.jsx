@@ -25,33 +25,41 @@ import { useNavigate, useLocation } from "react-router-dom";
 function Subject() {
   const orgId = useSelector((state) => state.auth.orgId);
 
-
   const [isOpen, setIsOpen] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   const navigate = useNavigate();
   const location = useLocation();
-  const { data: subjects, isLoading, isError } = useGetSubjectsQuery("subjects");
+  const {
+    data: subjects,
+    isLoading,
+    isError,
+  } = useGetSubjectsQuery(
+    { query: "subjects", organizationId: orgId },
+    { skip: !orgId },
+  );
 
-  const [deleteSubjects, { isLoading: isDeleting }] = useDeleteSubjectsMutation();
-  const [createSubject, { isLoading: isCreating }] = useCreateSubjectsMutation();
+  const [deleteSubjects, { isLoading: isDeleting }] =
+    useDeleteSubjectsMutation();
+  const [createSubject, { isLoading: isCreating }] =
+    useCreateSubjectsMutation();
   const [editSubject] = useEditSubjectsMutation();
-  
+
   const [formData, setFormData] = useState({
     ...initialFormState,
     organizationId: orgId,
   });
 
   const filteredData = useMemo(() => {
-    const list = subjects || [];
+    const list = subjects.content || [];
     if (!searchTerm) return list;
 
     const searchStr = searchTerm.toLowerCase();
     return list.filter(
       (item) =>
         item.name?.toLowerCase().includes(searchStr) ||
-        item.description?.toLowerCase().includes(searchStr)
+        item.description?.toLowerCase().includes(searchStr),
     );
   }, [subjects, searchTerm]);
 
@@ -68,7 +76,7 @@ function Subject() {
   }
 
   function handleEdit(id) {
-    const subject = subjects?.find((u) => u.id === id);
+    const subject = subjects?.content?.find((u) => u.id === id);
     if (subject) {
       setEditingSubject(subject);
       setFormData({
@@ -82,7 +90,9 @@ function Subject() {
 
   function handleNavigate(subject) {
     const currentPath = location.pathname;
-    const path = currentPath.endsWith('/') ? `${currentPath}${subject.id}` : `${currentPath}/${subject.id}`;
+    const path = currentPath.endsWith("/")
+      ? `${currentPath}${subject.id}`
+      : `${currentPath}/${subject.id}`;
     navigate(path);
   }
 
@@ -155,10 +165,7 @@ function Subject() {
           onDelete={handleDelete}
           onEdit={handleEdit}
           onNavigate={handleNavigate}
-          renderRow={({
-            name,
-            description,
-          }) => {
+          renderRow={({ name, description }) => {
             return (
               <>
                 <td>{name}</td>

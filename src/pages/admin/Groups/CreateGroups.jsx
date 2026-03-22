@@ -7,6 +7,7 @@ function CreateGroup({
   handleInputChange,
   isCreating,
   isEditing,
+  orgId,
 }) {
   const {
     data: teachers,
@@ -17,7 +18,7 @@ function CreateGroup({
     data: subjects,
     isLoading: isSubjectLoading,
     isError: isErrorSubject,
-  } = useGetSubjectsQuery("subjects");
+  } = useGetSubjectsQuery({ query: "subjects", organizationId: orgId });
 
   return (
     <div className={styles.container}>
@@ -127,7 +128,7 @@ function CreateGroup({
               )}
 
               {subjects &&
-                subjects.map(({ name, id }) => (
+                subjects?.content.map(({ name, id }) => (
                   <option key={id} value={id}>
                     {name}
                   </option>

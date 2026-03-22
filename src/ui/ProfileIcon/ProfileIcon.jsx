@@ -5,8 +5,7 @@ import { logOut } from "../../app/features/authSlice";
 import styles from "./ProfileIcon.module.css";
 
 const BASE_URL = "https://crmsystem-production-d4ee.up.railway.app";
-const DEFAULT_AVATAR =
-  "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+const DEFAULT_AVATAR = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
 function ProfileIcon({ user, isLoading = false }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +36,7 @@ function ProfileIcon({ user, isLoading = false }) {
   };
 
   const avatarSrc = user?.profilePictureUrl
-    ? `${BASE_URL}${user.profilePictureUrl}`
+    ? `${user.profilePictureUrl}`
     : DEFAULT_AVATAR;
 
   if (isLoading) return <div className={styles.loader}>...</div>;

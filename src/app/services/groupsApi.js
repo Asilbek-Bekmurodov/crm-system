@@ -7,6 +7,7 @@ const groupsApi = createApi({
     prepareHeaders: (headers, { getState }) => {
       const state = getState?.();
       const token = state?.auth?.token || localStorage.getItem("token");
+
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -17,14 +18,14 @@ const groupsApi = createApi({
   tagTypes: ["groups"],
   endpoints: (builder) => ({
     getGroups: builder.query({
-      query: (query) => ({
-        url: `/${query}`,
+      query: ({ query, organizationId }) => ({
+        url: `/${query}?organizationId=${organizationId}`,
       }),
       providesTags: ["groups"],
     }),
     createGroup: builder.mutation({
       query: ({ data, query }) => ({
-        url: `/${query}`,
+        url: `/${query}?organizationId=${data.organizationId}`,
         method: "POST",
         body: data,
       }),
@@ -32,15 +33,15 @@ const groupsApi = createApi({
     }),
     editGroups: builder.mutation({
       query: ({ data, id, query }) => ({
-        url: `/${query}/${id}`,
+        url: `/${query}/${id}?organizationId=${data.organizationId}`,
         method: "PUT",
         body: data,
       }),
       invalidatesTags: ["groups"],
     }),
     deleteGroups: builder.mutation({
-      query: ({ id, query }) => ({
-        url: `/${query}/${id}`,
+      query: ({ id, query, orgId }) => ({
+        url: `/${query}/${id}?organizationId=${orgId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["groups"],

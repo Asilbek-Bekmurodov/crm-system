@@ -32,7 +32,15 @@ function Groups() {
   const [isOpen, setIsOpen] = useState(false);
   const [editingGroup, setEditingGroup] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const { data: groups, isLoading, isError } = useGetGroupsQuery("groups");
+
+  const {
+    data: groups,
+    isLoading,
+    isError,
+  } = useGetGroupsQuery(
+    { query: "groups", organizationId: orgId },
+    { skip: !orgId },
+  );
 
   const [deleteGroups, { isLoading: isDeleting }] = useDeleteGroupsMutation();
   const [createGroup, { isLoading: isCreating }] = useCreateGroupMutation();
@@ -59,7 +67,7 @@ function Groups() {
   async function handleDelete(id) {
     if (window.confirm("Haqiqatdan ham o'chirmoqchimisiz?")) {
       try {
-        await deleteGroups({ id, query: "groups" }).unwrap();
+        await deleteGroups({ id, query: "groups", orgId }).unwrap();
         toast.success("Muvaffaqiyatli o'chirildi");
       } catch (e) {
         console.log(e);
@@ -69,7 +77,7 @@ function Groups() {
   }
 
   function handleEdit(id) {
-    const group = groups?.find((u) => u.id === id);
+    const group = groups?.content?.find((u) => u.id === id);
     if (group) {
       setEditingGroup(group);
       setFormData({
@@ -166,7 +174,7 @@ function Groups() {
       <div className={styles.tableContainer}>
         <Table
           headers={GroupTableHeaders}
-          data={groups} // 6. Filterlangan ma'lumot uzatildi
+          data={groups?.content} // 6. Filterlangan ma'lumot uzatildi
           onDelete={handleDelete}
           onEdit={handleEdit}
           renderRow={({
@@ -207,6 +215,7 @@ function Groups() {
         title={editingGroup ? "Edit Group" : "Create Group"}
       >
         <CreateGroup
+          orgId={orgId}
           handleSubmit={handleSubmit}
           formData={formData}
           handleInputChange={handleInputChange}

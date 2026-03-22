@@ -17,8 +17,8 @@ const subjectsApi = createApi({
   tagTypes: ["Subjects"],
   endpoints: (builder) => ({
     getSubjects: builder.query({
-      query: (query) => ({
-        url: `/${query}`,
+      query: ({ query, organizationId }) => ({
+        url: `/${query}?organizationId=${organizationId}`,
       }),
       providesTags: ["Subjects"],
     }),

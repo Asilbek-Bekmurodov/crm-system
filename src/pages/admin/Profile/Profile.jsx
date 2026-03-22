@@ -6,6 +6,7 @@ import styles from "./Profile.module.css";
 import { useGetMeQuery } from "../../../app/services/userApi";
 import { profileMenu } from "../../../../data/Profile/Profile";
 import { HiOutlineLogout } from "react-icons/hi";
+import { useDispatch } from "react-redux";
 
 const BASE_URL = "https://crmsystem-production-d4ee.up.railway.app";
 const DEFAULT_AVATAR = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
@@ -14,6 +15,7 @@ function Profile() {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
+  const dispatch = useDispatch();
 
   const {
     data: user,
@@ -42,12 +44,12 @@ function Profile() {
 
   const getAvatarSrc = () => {
     if (user?.profilePictureUrl) {
-      return `${BASE_URL}${user.profilePictureUrl}?t=${new Date().getTime()}`;
+      return `${user.profilePictureUrl}`;
     }
     return DEFAULT_AVATAR;
   };
 
-   const handleLogout = () => {
+  const handleLogout = () => {
     dispatch(LogOut());
     navigate("/auth");
   };
@@ -123,10 +125,10 @@ function Profile() {
           </ul>
 
           <div className={styles.sidebarFooter}>
-             <button onClick={handleLogout} className={styles.logoutBtn}>
-            <HiOutlineLogout size={20} />
-            <span>Chiqish</span>
-          </button>
+            <button onClick={handleLogout} className={styles.logoutBtn}>
+              <HiOutlineLogout size={20} />
+              <span>Chiqish</span>
+            </button>
           </div>
         </nav>
       </aside>
