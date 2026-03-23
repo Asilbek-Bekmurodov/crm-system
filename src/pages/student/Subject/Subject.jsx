@@ -52,7 +52,7 @@ function Subject() {
   });
 
   const filteredData = useMemo(() => {
-    const list = subjects.content || [];
+    const list = subjects?.content || [];
     if (!searchTerm) return list;
 
     const searchStr = searchTerm.toLowerCase();

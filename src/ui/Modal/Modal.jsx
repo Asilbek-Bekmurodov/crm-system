@@ -4,7 +4,6 @@ import { IoCloseOutline } from "react-icons/io5";
 function Modal({ title, children, setIsOpen, isOpen }) {
   const handleClose = () => {
     setIsOpen(false);
-    // setTimeout(() => {}, 200);
   };
 
   return (

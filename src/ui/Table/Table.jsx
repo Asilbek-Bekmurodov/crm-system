@@ -40,12 +40,14 @@ function Table({
                   </td>
                 )}
 
-                <td
-                  className={styles.actionCell}
-                  onClick={() => onNavigate(item)}
-                >
-                  <button className={styles.openBtn}>Open</button>
-                </td>
+                {onNavigate && (
+                  <td
+                    className={styles.actionCell}
+                    onClick={() => onNavigate(item)}
+                  >
+                    <button className={styles.openBtn}>Open</button>
+                  </td>
+                )}
               </tr>
             ))
           ) : (

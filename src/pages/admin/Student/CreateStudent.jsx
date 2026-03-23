@@ -10,6 +10,7 @@ function CreateStudent({
   handleGroupChange,
   isCreating,
   handleCheckboxChange,
+  groups,
 }) {
   const [showPassword, setShowPassword] = useState(false);
   return (
@@ -81,6 +82,62 @@ function CreateStudent({
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </span>
             </div>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Ota-ona tel. raqami</label>
+            <input
+              name="parentPhoneNumber"
+              className={styles.inputField}
+              type="text"
+              required
+              placeholder="+998..."
+              value={formData.parentPhoneNumber || ""}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Yosh (Age)</label>
+            <input
+              name="age"
+              className={styles.inputField}
+              type="number"
+              required
+              placeholder="Yosh"
+              value={formData.age}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Jinsi (Gender)</label>
+            <select
+              name="gender"
+              className={styles.inputField}
+              required
+              value={formData.gender}
+              onChange={handleInputChange}
+            >
+              <option value="" disabled>Tanlang</option>
+              <option value="MALE">Erkak</option>
+              <option value="FEMALE">Ayol</option>
+            </select>
+          </div>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Guruhni tanlang</label>
+            <select
+              name="enrolledGroupIds"
+              className={styles.inputField}
+              required
+              value={formData.enrolledGroupIds && formData.enrolledGroupIds.length > 0 ? formData.enrolledGroupIds[0] : ""}
+              onChange={(e) => {
+                handleInputChange({ target: { name: "enrolledGroupIds", value: [Number(e.target.value)] } });
+              }}
+            >
+              <option value="" disabled>Guruhni tanlang</option>
+              {groups && groups.map((g) => (
+                <option key={g.id} value={g.id}>{g.name} ({g.subjectName})</option>
+              ))}
+            </select>
           </div>
         </div>
 

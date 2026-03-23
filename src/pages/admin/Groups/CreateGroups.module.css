@@ -202,3 +202,48 @@
   background: var(--text-gray);
   cursor: not-allowed;
 }
+
+/* Custom Styled Time Field */
+.timeWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.timeInput {
+  background-color: var(--bg-main) !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: var(--primary) !important;
+  border: 2px solid var(--border) !important;
+  cursor: pointer;
+  padding-left: 45px !important;
+  letter-spacing: 1.5px;
+  border-radius: 10px !important;
+}
+
+.timeInput:hover, .timeInput:focus {
+  background-color: #fff !important;
+}
+
+.timeIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.timeInput::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}

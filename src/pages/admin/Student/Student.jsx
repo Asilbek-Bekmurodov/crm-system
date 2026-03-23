@@ -2,7 +2,6 @@ import { useSelector } from "react-redux";
 import Modal from "../../../ui/Modal/Modal";
 import styles from "./Student.module.css";
 
-// import CreateTeacher from "./CreateTeacher";
 import { useMemo, useState } from "react";
 import {
   useCreateUserMutation,
@@ -11,6 +10,7 @@ import {
   useGetUserQuery,
 } from "../../../app/services/userApi";
 import { useGetPermissionsQuery } from "../../../app/services/permissionsApi";
+import { useGetGroupsQuery } from "../../../app/services/groupsApi";
 import { toast } from "react-toastify";
 import { StudentTableHeaders } from "../../../../data/Admin";
 import FirstLoader from "../../../ui/FirstLoader/FirstLoader";
@@ -25,6 +25,10 @@ const initialFormState = {
   role: "STUDENT",
   organizationId: "",
   permissions: [],
+  age: "",
+  gender: "",
+  enrolledGroupIds: [],
+  parentPhoneNumber: "",
 };
 
 function Students() {
@@ -41,6 +45,12 @@ function Students() {
     isError: isAdminCreateError,
   } = useGetPermissionsQuery();
 
+  const {
+    data: groupsData,
+    isLoading: isGroupsLoading,
+  } = useGetGroupsQuery({ query: "groups", organizationId: `${id}&size=1000` }, { skip: !id });
+  const groups = groupsData?.content || [];
+
   const [deleteAdmin, { isLoading: isDeleting }] = useDeleteUserMutation();
   const [createAdmin, { isLoading: isCreating }] = useCreateUserMutation();
   const [editAdmin] = useEditUserMutation();
@@ -49,7 +59,6 @@ function Students() {
     organizationId: id,
   });
 
-  // 6. Filterni to'g'ri ishlatish
   const filteredData = useMemo(() => {
     const list = students?.content || [];
     if (!searchTerm) return list;
@@ -83,10 +92,14 @@ function Students() {
         username: user.username || "",
         firstname: user.firstname || "",
         lastname: user.lastname || "",
-        password: "", // Xavfsizlik uchun parolni bo'sh qoldiramiz
+        password: "", 
         role: user.role || "STUDENT",
         organizationId: id,
         permissions: user.permissions || [],
+        age: user.age || "",
+        gender: user.gender || "",
+        enrolledGroupIds: user.enrolledGroupIds || [],
+        parentPhoneNumber: user.parentPhoneNumbers?.[0] || "",
       });
       setIsOpen(true);
     }
@@ -134,8 +147,20 @@ function Students() {
     }
 
     try {
+      const payload = { ...formData };
+      if (payload.age) {
+        payload.age = Number(payload.age);
+      } else {
+        payload.age = null;
+      }
+      if (payload.parentPhoneNumber) {
+        payload.parentPhoneNumbers = [payload.parentPhoneNumber];
+      } else {
+        payload.parentPhoneNumbers = [];
+      }
+      delete payload.parentPhoneNumber;
+
       if (editingUser) {
-        const payload = { ...formData };
         if (!payload.password) delete payload.password;
         await editAdmin({
           query: "students",
@@ -145,7 +170,7 @@ function Students() {
       } else {
         await createAdmin({
           query: "students",
-          data: formData,
+          data: payload,
         }).unwrap();
       }
 
@@ -153,7 +178,6 @@ function Students() {
         editingUser ? "Student tahrirlandi!" : "Student yaratildi!",
       );
 
-      // 1. Forma tozalanishi va 4. Modal yopilishi
       setIsOpen(false);
       setEditingUser(null);
       setFormData({ ...initialFormState, organizationId: id });
@@ -162,7 +186,7 @@ function Students() {
     }
   }
 
-  if (isLoading || isPerLoading || isDeleting) return <FirstLoader />;
+  if (isLoading || isPerLoading || isDeleting || isGroupsLoading) return <FirstLoader />;
   if (isError || isAdminCreateError) return <div>Something went wrong!</div>;
 
   return (
@@ -172,7 +196,7 @@ function Students() {
         <button
           className={styles.createBtn}
           onClick={() => {
-            setEditingUser(null); // Yangi yaratish uchun editni tozalash
+            setEditingUser(null);
             setFormData({ ...initialFormState, organizationId: id });
             setIsOpen(true);
           }}
@@ -185,7 +209,7 @@ function Students() {
         <div className={styles.searchBox}>
           <input
             type="text"
-            placeholder="Search users..." // 3. Placeholder qo'shildi
+            placeholder="Search users..." 
             className={styles.searchInput}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -196,15 +220,28 @@ function Students() {
       <div className={styles.tableContainer}>
         <Table
           headers={StudentTableHeaders}
-          data={filteredData} // 6. Filterlangan ma'lumot uzatildi
+          data={filteredData} 
           onDelete={handleDelete}
           onEdit={handleEdit}
           renderRow={(user) => (
             <>
               <td>{user.firstname}</td>
               <td>{user.lastname}</td>
-              <td>{user.age}</td>
-              <td>{user.gender}</td>
+              <td>{user.age || "-"}</td>
+              <td>{user.gender || "-"}</td>
+              <td>
+                {user.enrolledGroupIds && user.enrolledGroupIds.length > 0
+                  ? user.enrolledGroupIds
+                      .map((gId) => groups.find((g) => g.id === gId)?.name)
+                      .filter(Boolean)
+                      .join(", ")
+                  : "-"}
+              </td>
+              <td>
+                {user.parentPhoneNumbers && user.parentPhoneNumbers.length > 0
+                  ? user.parentPhoneNumbers.join(", ")
+                  : "-"}
+              </td>
               <td>{user.username}</td>
               <td>{user.role}</td>
             </>
@@ -231,6 +268,7 @@ function Students() {
           handleGroupChange={handleGroupChange}
           isCreating={isCreating}
           handleCheckboxChange={handleCheckboxChange}
+          groups={groups}
         />
       </Modal>
     </div>

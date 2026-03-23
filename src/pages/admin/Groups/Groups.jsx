@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import Modal from "../../../ui/Modal/Modal";
 import styles from "./Groups.module.css";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 import { toast } from "react-toastify";
 import { GroupTableHeaders } from "../../../../data/Admin";
@@ -51,18 +51,18 @@ function Groups() {
   });
 
   // 6. Filterni to'g'ri ishlatish
-  // const filteredData = useMemo(() => {
-  //   const list = groups?.content || [];
-  //   if (!searchTerm) return list;
+  const filteredData = useMemo(() => {
+    const list = groups?.content || [];
+    if (!searchTerm) return list;
 
-  //   const searchStr = searchTerm.toLowerCase();
-  //   return list.filter(
-  //     (user) =>
-  //       user.firstname?.toLowerCase().includes(searchStr) ||
-  //       user.lastname?.toLowerCase().includes(searchStr) ||
-  //       user.username?.toLowerCase().includes(searchStr),
-  //   );
-  // }, [groups, searchTerm]);
+    const searchStr = searchTerm.toLowerCase();
+    return list.filter(
+      (group) =>
+        group.name?.toLowerCase().includes(searchStr) ||
+        group.subjectName?.toLowerCase().includes(searchStr) ||
+        group.teacherName?.toLowerCase().includes(searchStr),
+    );
+  }, [groups, searchTerm]);
 
   async function handleDelete(id) {
     if (window.confirm("Haqiqatdan ham o'chirmoqchimisiz?")) {
@@ -97,18 +97,16 @@ function Groups() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name === "teacherId") {
-      setFormData((prev) => {
-        return { ...prev, [name]: value === "" ? "" : Number(value) };
-      });
-    } else if (name === "subjectId") {
-      setFormData((prev) => {
-        return { ...prev, [name]: value === "" ? "" : Number(value) };
-      });
+    if (name === "teacherId" || name === "subjectId" || name === "price") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value === "" ? "" : Number(value),
+      }));
     } else {
-      setFormData((prev) => {
-        return { ...prev, [name]: value };
-      });
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
@@ -116,22 +114,25 @@ function Groups() {
     e.preventDefault();
 
     try {
+      const payload = { ...formData };
+      if (payload.lessonStartTime && payload.lessonStartTime.length === 5) {
+        payload.lessonStartTime = payload.lessonStartTime + ":00";
+      }
+
       if (editingGroup) {
         await editGroup({
           query: "groups",
-          data: formData,
+          data: payload,
           id: editingGroup.id,
         }).unwrap();
       } else {
         await createGroup({
           query: "groups",
-          data: formData,
+          data: payload,
         }).unwrap();
       }
 
       toast.success(editingGroup ? "Groups tahrirlandi!" : "Groups yaratildi!");
-
-      // 1. Forma tozalanishi va 4. Modal yopilishi
       setIsOpen(false);
       setEditingGroup(null);
       setFormData({ ...initialFormState, organizationId: orgId });
@@ -150,7 +151,7 @@ function Groups() {
         <button
           className={styles.createBtn}
           onClick={() => {
-            setEditingGroup(null); // Yangi yaratish uchun editni tozalash
+            setEditingGroup(null);
             setFormData({ ...initialFormState, organizationId: orgId });
             setIsOpen(true);
           }}
@@ -163,7 +164,7 @@ function Groups() {
         <div className={styles.searchBox}>
           <input
             type="text"
-            placeholder="Search Group..." // 3. Placeholder qo'shildi
+            placeholder="Search Group..."
             className={styles.searchInput}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -174,7 +175,7 @@ function Groups() {
       <div className={styles.tableContainer}>
         <Table
           headers={GroupTableHeaders}
-          data={groups?.content} // 6. Filterlangan ma'lumot uzatildi
+          data={filteredData}
           onDelete={handleDelete}
           onEdit={handleEdit}
           renderRow={({
@@ -196,7 +197,6 @@ function Groups() {
                 <td>{teacherName}</td>
                 <td>{price}</td>
                 <td>{lessonStartTime}</td>
-                <td></td>
               </>
             );
           }}

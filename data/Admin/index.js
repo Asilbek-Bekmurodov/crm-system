@@ -35,10 +35,10 @@ export let adminMenu = [
     title: "Message",
     path: "/admin/message",
   },
-  {
-    title: "Profile",
-    path: "/admin/profile",
-  },
+  // {
+  //   title: "Profile",
+  //   path: "/admin/profile",
+  // },
   {
     title: "Settings",
     path: "/admin/settings",
@@ -71,6 +71,8 @@ export const StudentTableHeaders = [
   "LastName",
   "Age",
   "Gender",
+  "Guruh",
+  "Tel Raqam",
   "Username",
   "Role",
   "Edit",
@@ -100,6 +102,7 @@ export const GroupTableHeaders = [
   "lessonStartTime",
   "Edit",
   "Delete",
+
 ];
 
 export const SubjectTableHeaders = [

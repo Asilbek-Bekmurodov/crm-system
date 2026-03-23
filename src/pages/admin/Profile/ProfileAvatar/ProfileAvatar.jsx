@@ -119,6 +119,8 @@ function ProfileAvatar() {
     }
   };
 
+
+
   return (
     <div className={styles.container}>
       <div className={styles.headerSection}>
@@ -138,7 +140,6 @@ function ProfileAvatar() {
               />
               <Upload size={24} />
               <span>Rasm tanlang</span>
-              <small>Rasm markazdan kvadrat ko'rinishda kesiladi</small>
             </label>
           </div>
 
