@@ -5,7 +5,7 @@ const userApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "https://crmsystem-production-d4ee.up.railway.app/api",
     prepareHeaders: (headers, { getState }) => {
-      const state = getState();
+      const state = getState?.();
       const token = state?.auth?.token || localStorage.getItem("token");
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
@@ -57,6 +57,14 @@ const userApi = createApi({
       }),
       invalidatesTags: ["user"],
     }),
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: "users/change-password",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["user"],
+    }),
   }),
 });
 
@@ -68,6 +76,7 @@ export const {
   useEditUserMutation,
   useGetByRoleQuery,
   useGetMeQuery,
+  useChangePasswordMutation,
 } = userApi;
 
 export default userApi;
