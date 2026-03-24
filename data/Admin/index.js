@@ -53,7 +53,7 @@ export let adminMenu = [
   },
   {
     title: "TimeTable",
-    path: "/admin/TimeTable",
+    path: "/admin/timetable",
   },
 ];
 
@@ -103,6 +103,7 @@ export const GroupTableHeaders = [
   "teacherName",
   "price",
   "lessonStartTime",
+  "Timetable",
   "Edit",
   "Delete",
 
@@ -125,4 +126,17 @@ export const SubjectTopicTableHeaders = [
   "Edit",
   "Delete",
   "Open",
+];
+
+export const TimeTableTableHeaders = [
+  "T/r",
+  "id",
+  "groupId",
+  "groupName",
+  "dayOfWeek",
+  "startTime",
+  "endTime",
+  "room",
+  "Edit",
+  "Delete",
 ];

@@ -37,6 +37,7 @@ import ProfileAvatar from "./pages/admin/Profile/ProfileAvatar/ProfileAvatar";
 import ProfileSecurity from "./pages/admin/Profile/ProfileSecurity/ProfileSecurity";
 import ProfilePayments from "./pages/admin/Profile/ProfilePayments/ProfilePayments";
 import ProfileNotifications from "./pages/admin/Profile/ProfileNotifications/ProfileNotifications";
+import TimeTable from "./pages/admin/TimeTable/TimeTable";
 
 function App() {
   return (
@@ -79,6 +80,8 @@ function App() {
           <Route path="message" element={<Message />} />
           <Route path="profile/*" element={<Profile />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="timetable" element={<TimeTable />} />
+          <Route path="timetable/:groupId" element={<TimeTable />} />
         </Route>
         <Route path="/student" element={<Student />}>
           <Route path="subjects" element={<Subject />} />

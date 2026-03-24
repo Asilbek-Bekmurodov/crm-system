@@ -6,6 +6,7 @@ import organizationApi from "./services/organizationApi";
 import permissionsApi from "./services/permissionsApi";
 import groupsApi from "./services/groupsApi";
 import subjectsApi from "./services/subjectsApi";
+import timetablesApi from "./services/timetablesApi";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     [organizationApi.reducerPath]: organizationApi.reducer,
     [groupsApi.reducerPath]: groupsApi.reducer,
     [subjectsApi.reducerPath]: subjectsApi.reducer,
+    [timetablesApi.reducerPath]: timetablesApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -24,7 +26,8 @@ const store = configureStore({
       .concat(organizationApi.middleware)
       .concat(permissionsApi.middleware)
       .concat(groupsApi.middleware)
-      .concat(subjectsApi.middleware),
+      .concat(subjectsApi.middleware)
+      .concat(timetablesApi.middleware),
 });
 
 export default store;
