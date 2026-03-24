@@ -51,6 +51,10 @@ export let adminMenu = [
     title: "Subject",
     path: "/admin/subject",
   },
+  {
+    title: "TimeTable",
+    path: "/admin/TimeTable",
+  },
 ];
 
 export const TeacherTableHeaders = [
