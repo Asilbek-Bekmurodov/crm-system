@@ -38,8 +38,8 @@ function Groups() {
     isLoading,
     isError,
   } = useGetGroupsQuery(
-    { query: "groups", organizationId: orgId },
-    { skip: !orgId },
+    { query: "groups", organizationId: `${orgId}&size=1000` },
+    { skip: !orgId || orgId === "undefined" },
   );
 
   const [deleteGroups, { isLoading: isDeleting }] = useDeleteGroupsMutation();
@@ -147,7 +147,7 @@ function Groups() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <h1>Student</h1>
+        <h1>Guruhlar</h1>
         <button
           className={styles.createBtn}
           onClick={() => {

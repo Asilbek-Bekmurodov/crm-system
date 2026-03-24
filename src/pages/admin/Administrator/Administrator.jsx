@@ -23,93 +23,100 @@ const initialFormState = {
   role: "ADMINISTRATOR",
   organizationId: "",
   permissions: [],
+  age: "",
+  gender: "",
 };
 
 function Administrators() {
-  const id = useSelector((state) => state.auth.orgId);
+  const orgId = useSelector((state) => state.auth.orgId);
 
   const [isOpen, setIsOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   const {
-    data: administrators,
+    data: allUsers,
     isLoading,
     isError,
-  } = useGetUserQuery("administrators");
+  } = useGetUserQuery("users");
+  
   const {
-    data: permissions,
+    data: permissionsData,
     isLoading: isPerLoading,
     isError: isAdminCreateError,
   } = useGetPermissionsQuery();
 
-  const [deleteAdmin, { isLoading: isDeleting }] = useDeleteUserMutation();
+  const [deleteUserMutation, { isLoading: isDeleting }] = useDeleteUserMutation();
   const [createAdmin, { isLoading: isCreating }] = useCreateUserMutation();
   const [editAdmin] = useEditUserMutation();
+  
   const [formData, setFormData] = useState({
     ...initialFormState,
-    organizationId: id,
+    organizationId: orgId,
   });
 
-  // 6. Filterni to'g'ri ishlatish
   const filteredData = useMemo(() => {
-    const list = administrators || [];
-    if (!searchTerm) return list;
+    const list = allUsers?.content || allUsers || [];
+    const administratorsList = list.filter(user => user.role === "ADMINISTRATOR" || user.role === "ADMIN");
+    
+    if (!searchTerm) return administratorsList;
 
     const searchStr = searchTerm.toLowerCase();
-    return list.filter(
+    return administratorsList.filter(
       (user) =>
         user.firstname?.toLowerCase().includes(searchStr) ||
         user.lastname?.toLowerCase().includes(searchStr) ||
         user.username?.toLowerCase().includes(searchStr),
     );
-  }, [administrators, searchTerm]);
+  }, [allUsers, searchTerm]);
+
+  const groupedPermissions = useMemo(() => {
+    return permissionsData?.reduce((acc, permission) => {
+      const group = permission.split("_")[0];
+      if (!acc[group]) acc[group] = [];
+      acc[group].push(permission);
+      return acc;
+    }, {});
+  }, [permissionsData]);
 
   async function handleDelete(id) {
     if (window.confirm("Haqiqatdan ham o'chirmoqchimisiz?")) {
       try {
-        await deleteAdmin({ id, query: "administrators" }).unwrap();
+        await deleteUserMutation({ id, query: "users" }).unwrap();
         toast.success("Muvaffaqiyatli o'chirildi");
       } catch (e) {
-        console.log(e);
-        toast.error("O'chirishda xatolik yuz berdi");
+        console.error("Delete Error:", e);
+        toast.error(e?.data?.message || "O'chirishda xatolik yuz berdi");
       }
     }
   }
 
-  function handleEdit(id) {
-    const user = administrators?.find((u) => u.id === id);
+  function handleEdit(userId) {
+    const list = allUsers?.content || allUsers || [];
+    const user = list.find((u) => u.id === userId);
     if (user) {
       setEditingUser(user);
       setFormData({
         username: user.username || "",
         firstname: user.firstname || "",
         lastname: user.lastname || "",
-        password: "", // Xavfsizlik uchun parolni bo'sh qoldiramiz
+        password: "", 
         role: user.role || "ADMINISTRATOR",
-        organizationId: id,
+        organizationId: orgId,
         permissions: user.permissions || [],
+        age: user.age || "",
+        gender: user.gender || "",
       });
       setIsOpen(true);
     }
   }
 
-  const groupedPermissions = permissions?.reduce((acc, permission) => {
-    const group = permission.split("_")[0];
-    if (!acc[group]) acc[group] = [];
-    acc[group].push(permission);
-    return acc;
-  }, {});
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
-      console.log(prev);
-      return { ...prev, [name]: value };
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  function handleCheckboxChange(e) {
+  const handleCheckboxChange = (e) => {
     const { value, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -117,16 +124,16 @@ function Administrators() {
         ? [...prev.permissions, value]
         : prev.permissions.filter((p) => p !== value),
     }));
-  }
+  };
 
-  function handleGroupChange(groupPermissions, checked) {
+  const handleGroupChange = (groupPermissions, checked) => {
     setFormData((prev) => ({
       ...prev,
       permissions: checked
         ? [...new Set([...prev.permissions, ...groupPermissions])]
         : prev.permissions.filter((p) => !groupPermissions.includes(p)),
     }));
-  }
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -136,18 +143,26 @@ function Administrators() {
     }
 
     try {
+      const payload = { 
+        ...formData, 
+        age: Number(formData.age),
+        active: true,
+        organizationId: Number(orgId),
+        parentPhoneNumbers: [],
+        enrolledGroupIds: []
+      };
+
       if (editingUser) {
-        const payload = { ...formData };
         if (!payload.password) delete payload.password;
         await editAdmin({
-          query: "administrators",
+          query: "users",
           data: payload,
           id: editingUser.id,
         }).unwrap();
       } else {
         await createAdmin({
-          query: "administrators",
-          data: formData,
+          query: "users",
+          data: payload,
         }).unwrap();
       }
 
@@ -155,17 +170,17 @@ function Administrators() {
         editingUser ? "Administrator tahrirlandi!" : "Administrator yaratildi!",
       );
 
-      // 1. Forma tozalanishi va 4. Modal yopilishi
       setIsOpen(false);
       setEditingUser(null);
-      setFormData({ ...initialFormState, organizationId: id });
+      setFormData({ ...initialFormState, organizationId: orgId });
     } catch (err) {
+      console.error("Submit Error:", err);
       toast.error(err?.data?.message || "Xatolik yuz berdi");
     }
   }
 
   if (isLoading || isPerLoading || isDeleting) return <FirstLoader />;
-  if (isError || isAdminCreateError) return <div>Something went wrong!</div>;
+  if (isError || isAdminCreateError) return <div className={styles.errorContainer}>Something went wrong while fetching data.</div>;
 
   return (
     <div className={styles.wrapper}>
@@ -174,8 +189,8 @@ function Administrators() {
         <button
           className={styles.createBtn}
           onClick={() => {
-            setEditingUser(null); // Yangi yaratish uchun editni tozalash
-            setFormData({ ...initialFormState, organizationId: id });
+            setEditingUser(null);
+            setFormData({ ...initialFormState, organizationId: orgId });
             setIsOpen(true);
           }}
         >
@@ -187,7 +202,7 @@ function Administrators() {
         <div className={styles.searchBox}>
           <input
             type="text"
-            placeholder="Search users..." // 3. Placeholder qo'shildi
+            placeholder="Search users..."
             className={styles.searchInput}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -198,17 +213,21 @@ function Administrators() {
       <div className={styles.tableContainer}>
         <Table
           headers={AdministratorTableHeaders}
-          data={filteredData} // 6. Filterlangan ma'lumot uzatildi
+          data={filteredData}
           onDelete={handleDelete}
           onEdit={handleEdit}
           renderRow={(user) => (
             <>
               <td>{user.firstname}</td>
               <td>{user.lastname}</td>
-              <td>{user.age}</td>
-              <td>{user.gender}</td>
+              <td>{user.age || "—"}</td>
+              <td>{user.gender || "—"}</td>
               <td>{user.username}</td>
-              <td>{user.role}</td>
+              <td>
+                <span className={`badge ${user.role === "ADMINISTRATOR" || user.role === "ADMIN" ? "badge-admin" : ""}`}>
+                  {user.role === "ADMIN" ? "ADMINISTRATOR" : user.role}
+                </span>
+              </td>
             </>
           )}
         />
@@ -220,10 +239,10 @@ function Administrators() {
           setIsOpen(value);
           if (!value) {
             setEditingUser(null);
-            setFormData({ ...initialFormState, organizationId: id });
+            setFormData({ ...initialFormState, organizationId: orgId });
           }
         }}
-        title={editingUser ? "Edit Administrator" : "Create Administrator"}
+        title={editingUser ? "Edit Admin" : "Create Admin"}
       >
         <CreateAdministrator
           handleSubmit={handleSubmit}
@@ -238,4 +257,5 @@ function Administrators() {
     </div>
   );
 }
+
 export default Administrators;

@@ -36,8 +36,8 @@ function Subject() {
     isLoading,
     isError,
   } = useGetSubjectsQuery(
-    { query: "subjects", organizationId: orgId },
-    { skip: !orgId },
+    { query: "subjects", organizationId: `${orgId}&size=1000` },
+    { skip: !orgId || orgId === "undefined" },
   );
 
   const [deleteSubjects, { isLoading: isDeleting }] =

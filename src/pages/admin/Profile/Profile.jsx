@@ -1,12 +1,13 @@
 import React from "react";
 import { useNavigate, NavLink, Outlet } from "react-router-dom";
-import { ArrowLeft, LogOut, Loader2 } from "lucide-react";
+import { ArrowLeft, LogOut as LogOutIcon, Loader2 } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import styles from "./Profile.module.css";
 import { useGetMeQuery } from "../../../app/services/userApi";
 import { profileMenu } from "../../../../data/Profile/Profile";
 import { HiOutlineLogout } from "react-icons/hi";
 import { useDispatch } from "react-redux";
+import { logOut } from "../../../app/features/authSlice";
 
 const BASE_URL = "https://crmsystem-production-d4ee.up.railway.app";
 const DEFAULT_AVATAR = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
@@ -50,7 +51,7 @@ function Profile() {
   };
 
   const handleLogout = () => {
-    dispatch(LogOut());
+    dispatch(logOut());
     navigate("/auth");
   };
 

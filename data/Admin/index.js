@@ -55,12 +55,11 @@ export let adminMenu = [
 
 export const TeacherTableHeaders = [
   "T/r",
-  "FirsName",
-  "LastName",
-  "Age",
-  "Gender",
-  "Username",
-  "Role",
+  "O'qituvchi",
+  "Yoshi",
+  "Jinsi",
+  "Guruhlar",
+  "Rol",
   "Edit",
   "Delete",
 ];

@@ -35,26 +35,39 @@ const userApi = createApi({
       query: (role) => `/users/role/${role}`,
     }),
     createUser: builder.mutation({
-      query: ({ data, query }) => ({
-        url: `/${query}`,
-        method: "POST",
-        body: data,
-      }),
+      query: (arg) => {
+        const data = arg?.data || arg;
+        const query = arg?.query || "users";
+        return {
+          url: `/${query}`,
+          method: "POST",
+          body: data,
+        };
+      },
       invalidatesTags: ["user"],
     }),
     editUser: builder.mutation({
-      query: ({ data, id, query }) => ({
-        url: `/${query}/${id}`,
-        method: "PUT",
-        body: data,
-      }),
+      query: (arg) => {
+        const id = arg?.id;
+        const data = arg?.data;
+        const query = arg?.query || "users";
+        return {
+          url: `/${query}/${id}`,
+          method: "PUT",
+          body: data,
+        };
+      },
       invalidatesTags: ["user"],
     }),
     deleteUser: builder.mutation({
-      query: ({ id, query }) => ({
-        url: `/${query}/${id}`,
-        method: "DELETE",
-      }),
+      query: (arg) => {
+        const id = typeof arg === "object" ? arg.id : arg;
+        const query = (typeof arg === "object" ? arg.query : "users") || "users";
+        return {
+          url: `/${query}/${id}`,
+          method: "DELETE",
+        };
+      },
       invalidatesTags: ["user"],
     }),
     changePassword: builder.mutation({

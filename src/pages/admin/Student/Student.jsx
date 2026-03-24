@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import Modal from "../../../ui/Modal/Modal";
 import styles from "./Student.module.css";
-
 import { useMemo, useState } from "react";
 import {
   useCreateUserMutation,
@@ -10,12 +9,12 @@ import {
   useGetUserQuery,
 } from "../../../app/services/userApi";
 import { useGetPermissionsQuery } from "../../../app/services/permissionsApi";
-import { useGetGroupsQuery } from "../../../app/services/groupsApi";
 import { toast } from "react-toastify";
 import { StudentTableHeaders } from "../../../../data/Admin";
 import FirstLoader from "../../../ui/FirstLoader/FirstLoader";
 import Table from "../../../ui/Table/Table";
 import CreateStudent from "./CreateStudent";
+import { useGetGroupsQuery } from "../../../app/services/groupsApi";
 
 const initialFormState = {
   username: "",
@@ -28,64 +27,73 @@ const initialFormState = {
   age: "",
   gender: "",
   enrolledGroupIds: [],
-  parentPhoneNumber: "",
+  parentPhoneNumbers: [],
 };
 
 function Students() {
-  const id = useSelector((state) => state.auth.orgId);
+  const orgId = useSelector((state) => state.auth.orgId);
 
   const [isOpen, setIsOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: students, isLoading, isError } = useGetUserQuery("students");
   const {
-    data: permissions,  
-    isLoading: isPerLoading,
-    isError: isAdminCreateError,
-  } = useGetPermissionsQuery();
+    data: allUsers,
+    isLoading,
+    isError,
+  } = useGetUserQuery("users");
+  
+  const { data: groups, isLoading: isGroupsLoading } = useGetGroupsQuery({ query: "groups", organizationId: orgId });
+  const { data: permissionsData, isLoading: isPermLoading } = useGetPermissionsQuery();
 
-  const {
-    data: groupsData,
-    isLoading: isGroupsLoading,
-  } = useGetGroupsQuery({ query: "groups", organizationId: `${id}&size=1000` }, { skip: !id });
-  const groups = groupsData?.content || [];
-
-  const [deleteAdmin, { isLoading: isDeleting }] = useDeleteUserMutation();
+  const [deleteAdmin, { isLoading: isDeletingItems }] = useDeleteUserMutation();
   const [createAdmin, { isLoading: isCreating }] = useCreateUserMutation();
   const [editAdmin] = useEditUserMutation();
+  
   const [formData, setFormData] = useState({
     ...initialFormState,
-    organizationId: id,
+    organizationId: orgId,
   });
 
   const filteredData = useMemo(() => {
-    const list = students?.content || [];
-    if (!searchTerm) return list;
+    const list = allUsers?.content || allUsers || [];
+    const studentsList = list.filter(user => user.role === "STUDENT");
+    
+    if (!searchTerm) return studentsList;
 
     const searchStr = searchTerm.toLowerCase();
-    return list.filter(
+    return studentsList.filter(
       (user) =>
         user.firstname?.toLowerCase().includes(searchStr) ||
         user.lastname?.toLowerCase().includes(searchStr) ||
         user.username?.toLowerCase().includes(searchStr),
     );
-  }, [students, searchTerm]);
+  }, [allUsers, searchTerm]);
 
-  async function handleDelete(id) {
+  const groupedPermissions = useMemo(() => {
+    return permissionsData?.reduce((acc, permission) => {
+      const group = permission.split("_")[0];
+      if (!acc[group]) acc[group] = [];
+      acc[group].push(permission);
+      return acc;
+    }, {});
+  }, [permissionsData]);
+
+  async function handleDelete(userId) {
     if (window.confirm("Haqiqatdan ham o'chirmoqchimisiz?")) {
       try {
-        await deleteAdmin({ id, query: "students" }).unwrap();
+        await deleteAdmin({ id: userId, query: "users" }).unwrap();
         toast.success("Muvaffaqiyatli o'chirildi");
       } catch (e) {
-        console.log(e);
-        toast.error("O'chirishda xatolik yuz berdi");
+        console.error("Delete Student Error:", e);
+        toast.error(e?.data?.message || "O'chirishda xatolik yuz berdi");
       }
     }
   }
 
-  function handleEdit(id) {
-    const user = students?.content?.find((u) => u.id === id);
+  function handleEdit(userId) {
+    const list = allUsers?.content || allUsers || [];
+    const user = list.find((u) => u.id === userId);
     if (user) {
       setEditingUser(user);
       setFormData({
@@ -94,7 +102,7 @@ function Students() {
         lastname: user.lastname || "",
         password: "", 
         role: user.role || "STUDENT",
-        organizationId: id,
+        organizationId: orgId,
         permissions: user.permissions || [],
         age: user.age || "",
         gender: user.gender || "",
@@ -105,22 +113,12 @@ function Students() {
     }
   }
 
-  const groupedPermissions = permissions?.reduce((acc, permission) => {
-    const group = permission.split("_")[0];
-    if (!acc[group]) acc[group] = [];
-    acc[group].push(permission);
-    return acc;
-  }, {});
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
-      console.log(prev);
-      return { ...prev, [name]: value };
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  function handleCheckboxChange(e) {
+  const handleCheckboxChange = (e) => {
     const { value, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -128,76 +126,69 @@ function Students() {
         ? [...prev.permissions, value]
         : prev.permissions.filter((p) => p !== value),
     }));
-  }
+  };
 
-  function handleGroupChange(groupPermissions, checked) {
+  const handleGroupChange = (groupPermissions, checked) => {
     setFormData((prev) => ({
       ...prev,
       permissions: checked
         ? [...new Set([...prev.permissions, ...groupPermissions])]
         : prev.permissions.filter((p) => !groupPermissions.includes(p)),
     }));
-  }
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (formData.permissions.length === 0) {
-      toast.error("Kamida bitta huquq tanlang!");
-      return;
-    }
-
     try {
-      const payload = { ...formData };
-      if (payload.age) {
-        payload.age = Number(payload.age);
-      } else {
-        payload.age = null;
-      }
-      if (payload.parentPhoneNumber) {
-        payload.parentPhoneNumbers = [payload.parentPhoneNumber];
-      } else {
-        payload.parentPhoneNumbers = [];
-      }
+      const payload = { 
+        ...formData, 
+        age: Number(formData.age),
+        parentPhoneNumbers: formData.parentPhoneNumber ? [formData.parentPhoneNumber] : [],
+        active: true,
+        organizationId: Number(orgId),
+        studentStatus: "ACTIVE",
+        coins: 0,
+        balance: 0
+      };
+      
       delete payload.parentPhoneNumber;
 
       if (editingUser) {
         if (!payload.password) delete payload.password;
         await editAdmin({
-          query: "students",
+          query: "users",
           data: payload,
           id: editingUser.id,
         }).unwrap();
       } else {
         await createAdmin({
-          query: "students",
+          query: "users",
           data: payload,
         }).unwrap();
       }
 
-      toast.success(
-        editingUser ? "Student tahrirlandi!" : "Student yaratildi!",
-      );
-
+      toast.success(editingUser ? "Talaba tahrirlandi!" : "Talaba yaratildi!");
       setIsOpen(false);
       setEditingUser(null);
-      setFormData({ ...initialFormState, organizationId: id });
+      setFormData({ ...initialFormState, organizationId: orgId });
     } catch (err) {
+      console.error("Submit Student Error:", err);
       toast.error(err?.data?.message || "Xatolik yuz berdi");
     }
   }
 
-  if (isLoading || isPerLoading || isDeleting || isGroupsLoading) return <FirstLoader />;
-  if (isError || isAdminCreateError) return <div>Something went wrong!</div>;
+  if (isLoading || isDeletingItems || isGroupsLoading || isPermLoading) return <FirstLoader />;
+  if (isError) return <div>Something went wrong while fetching data.</div>;
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <h1>Student</h1>
+        <h1>Students</h1>
         <button
           className={styles.createBtn}
           onClick={() => {
             setEditingUser(null);
-            setFormData({ ...initialFormState, organizationId: id });
+            setFormData({ ...initialFormState, organizationId: orgId });
             setIsOpen(true);
           }}
         >
@@ -209,7 +200,7 @@ function Students() {
         <div className={styles.searchBox}>
           <input
             type="text"
-            placeholder="Search users..." 
+            placeholder="Search users..."
             className={styles.searchInput}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -220,28 +211,21 @@ function Students() {
       <div className={styles.tableContainer}>
         <Table
           headers={StudentTableHeaders}
-          data={filteredData} 
+          data={filteredData}
           onDelete={handleDelete}
           onEdit={handleEdit}
           renderRow={(user) => (
             <>
               <td>{user.firstname}</td>
               <td>{user.lastname}</td>
-              <td>{user.age || "-"}</td>
-              <td>{user.gender || "-"}</td>
+              <td>{user.age || "—"}</td>
+              <td>{user.gender || "—"}</td>
               <td>
-                {user.enrolledGroupIds && user.enrolledGroupIds.length > 0
-                  ? user.enrolledGroupIds
-                      .map((gId) => groups.find((g) => g.id === gId)?.name)
-                      .filter(Boolean)
-                      .join(", ")
-                  : "-"}
+                <span className="badge">
+                  {user.enrolledGroups?.length || user.enrolledGroupIds?.length || 0} guruh
+                </span>
               </td>
-              <td>
-                {user.parentPhoneNumbers && user.parentPhoneNumbers.length > 0
-                  ? user.parentPhoneNumbers.join(", ")
-                  : "-"}
-              </td>
+              <td>{user.parentPhoneNumbers?.[0] || user.parentPhoneNumber || "—"}</td>
               <td>{user.username}</td>
               <td>{user.role}</td>
             </>
@@ -255,23 +239,24 @@ function Students() {
           setIsOpen(value);
           if (!value) {
             setEditingUser(null);
-            setFormData({ ...initialFormState, organizationId: id });
+            setFormData({ ...initialFormState, organizationId: orgId });
           }
         }}
         title={editingUser ? "Edit Student" : "Create Student"}
       >
         <CreateStudent
+          groups={groups?.content || groups}
           handleSubmit={handleSubmit}
           formData={formData}
           handleInputChange={handleInputChange}
-          groupedPermissions={groupedPermissions}
-          handleGroupChange={handleGroupChange}
           isCreating={isCreating}
+          groupedPermissions={groupedPermissions}
           handleCheckboxChange={handleCheckboxChange}
-          groups={groups}
+          handleGroupChange={handleGroupChange}
         />
       </Modal>
     </div>
   );
 }
+
 export default Students;

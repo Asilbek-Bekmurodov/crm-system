@@ -1,195 +1,121 @@
 :root {
-  /* === COLORS === */
   --bg-color: #ffffff;
-  --header-bg: #f9fafb;
-  --row-even: #fcfcfd;
-  --row-hover: #f3f4f6;
-
-  --text-main: #111827;
-  --text-muted: #6b7280;
-
-  --border-color: #e5e7eb;
-  --column-divider: #e5e7eb;
-
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
-
-  /* === SIZES === */
-  --radius: 14px;
-  --spacing-y: 16px;
-  --spacing-x: 20px;
-  --font-size: 14px;
+  --header-bg: #f8fafc;
+  --row-hover: #f1f5f9;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border-color: #f1f5f9;
+  --radius: 16px;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* === TABLE CONTAINER === */
 .tableContainer {
   width: 100%;
   overflow-x: auto;
   background: var(--bg-color);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  border: 1px solid var(--border-color);
-}
-
-/* Scroll */
-.tableContainer::-webkit-scrollbar {
-  height: 6px;
-}
-
-.tableContainer::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 10px;
-}
-
-/* === TABLE === */
-.table {
-  width: 100%;
-  min-width: 750px;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  font-size: var(--font-size);
-}
-
-/* === HEADER === */
-.table thead {
-  background: var(--header-bg);
-}
-
-.table th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-
-  padding: var(--spacing-y) var(--spacing-x);
-  text-align: left;
-  font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-
-  color: var(--text-main);
-  border-bottom: 1px solid var(--border-color);
-}
-
-/* === BODY === */
-.table td {
-  padding: var(--spacing-y) var(--spacing-x);
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-color);
-  background: var(--bg-color);
-  transition: background 0.2s ease;
-}
-
-/* 🔥 Vertikal ustun chiziqlari */
-.table th:not(:last-child),
-.table td:not(:last-child) {
-  border-right: 1px solid var(--column-divider);
-}
-
-/* Zebra effect */
-.table tbody tr:nth-child(even) td {
-  background: var(--row-even);
-}
-
-/* Hover */
-.table tbody tr:hover td {
-  background: var(--row-hover);
-}
-
-/* Remove last border */
-.table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-/* Index column */
-.index {
-  width: 50px;
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-/* Optional: smooth row animation */
-.table tbody tr {
-  transition: transform 0.15s ease;
-}
-
-.table tbody tr:hover {
-  transform: scale(1.002);
-}
-
-.actionCell {
-  text-align: center;
-  cursor: pointer;
-  width: 60px; /* Ikonka ustuni kengligini belgilash */
-}
-
-.editIcon {
-  color: #4a90e2;
-  font-size: 18px;
-}
-
-.deleteIcon {
-  color: #e74c3c;
-  font-size: 18px;
-}
-
-.table td {
-  padding: 12px 8px;
-  vertical-align: middle; /* Katak ichida vertikal o'rtaga olish */
+  border: 1px solid #e2e8f0;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-}
-
-.table th,
-.table td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-}
-
-/* Action ustunlari uchun maxsus kenglik va markazlash */
-.actionCell {
-  width: 50px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.editIcon {
-  color: #4a90e2;
-  font-size: 18px;
-}
-.deleteIcon {
-  color: #e74c3c;
-  font-size: 18px;
-}
-
-.index {
-  width: 40px;
-  font-weight: bold;
-}
-
-.openBtn {
-  background-color: #6366f1;
-  color: white;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
   font-size: 14px;
+  color: var(--text-main);
+}
+
+.table th {
+  background: var(--header-bg);
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table th:last-child {
+  border-right: none;
+}
+
+.table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  vertical-align: middle;
   transition: background 0.2s ease;
 }
 
-.openBtn:hover {
-  background-color: #4f46e5;
+.table td:last-child {
+  border-right: none;
+}
+
+.table tbody tr:hover td {
+  background: var(--row-hover);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.index {
+  width: 60px;
+  font-weight: 700;
+  color: var(--text-muted);
 }
 
 .actionCell {
+  width: 60px;
   text-align: center;
+}
+
+.iconWrap {
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  transition: 0.2s;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.editIcon {
+  color: #6366f1;
+}
+.editIcon:hover {
+  background: rgba(99, 102, 241, 0.1);
+  transform: scale(1.1);
+}
+
+.deleteIcon {
+  color: #ef4444;
+}
+.deleteIcon:hover {
+  background: rgba(239, 68, 68, 0.1);
+  transform: scale(1.1);
+}
+
+.openBtn {
+  background: #6366f1;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.openBtn:hover {
+  background: #4f46e5;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
