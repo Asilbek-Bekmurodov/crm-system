@@ -1,5 +1,4 @@
-import { FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
+import { Edit2, Trash2, Eye } from "lucide-react";
 import styles from "./Table.module.css";
 
 function Table({
@@ -29,23 +28,29 @@ function Table({
                   className={styles.actionCell}
                   onClick={() => onEdit(item.id)}
                 >
-                  <FaEdit className={styles.editIcon} />
+                  <div className={`${styles.iconWrap} ${styles.editIcon}`}>
+                    <Edit2 size={18} />
+                  </div>
                 </td>
                 {username !== "superadmin" && (
                   <td
                     className={styles.actionCell}
                     onClick={() => onDelete(item.id)}
                   >
-                    <MdDelete className={styles.deleteIcon} />
+                    <div className={`${styles.iconWrap} ${styles.deleteIcon}`}>
+                      <Trash2 size={18} />
+                    </div>
                   </td>
                 )}
 
-                <td
-                  className={styles.actionCell}
-                  onClick={() => onNavigate(item)}
-                >
-                  <button className={styles.openBtn}>Open</button>
-                </td>
+                {onNavigate && (
+                  <td
+                    className={styles.actionCell}
+                    onClick={() => onNavigate(item)}
+                  >
+                    <button className={styles.openBtn}>Open</button>
+                  </td>
+                )}
               </tr>
             ))
           ) : (

@@ -1,3 +1,4 @@
+import { Clock } from "lucide-react";
 import { useGetSubjectsQuery } from "../../../app/services/subjectsApi";
 import { useGetUserQuery } from "../../../app/services/userApi";
 import styles from "./CreateGroups.module.css";
@@ -69,16 +70,18 @@ function CreateGroup({
             />
           </div>
           <div className={styles.inputGroup}>
-            <label className={styles.label}>lessonStartTime</label>
-            <input
-              name="lessonStartTime"
-              className={styles.inputField}
-              type="string"
-              required
-              placeholder="lessonStartTime"
-              value={formData.lessonStartTime ?? ""}
-              onChange={handleInputChange}
-            />
+            <label className={styles.label}>Dars boshlanish vaqti</label>
+            <div className={styles.timeWrapper}>
+              <Clock className={styles.timeIcon} size={20} />
+              <input
+                name="lessonStartTime"
+                className={`${styles.inputField} ${styles.timeInput}`}
+                type="time"
+                required
+                value={formData.lessonStartTime ?? ""}
+                onChange={handleInputChange}
+              />
+            </div>
           </div>
           <div className={styles.inputGroup}>
             <label htmlFor="teacher" className={styles.label}>
@@ -135,6 +138,8 @@ function CreateGroup({
                 ))}
             </select>
           </div>
+          
+
         </div>
 
         <div className={styles.formFooter}>

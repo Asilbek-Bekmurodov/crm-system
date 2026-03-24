@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import Modal from "../../../ui/Modal/Modal";
 import styles from "./Teacher.module.css";
-
 import { useMemo, useState } from "react";
 import {
   useCreateUserMutation,
@@ -12,9 +11,10 @@ import {
 import { useGetPermissionsQuery } from "../../../app/services/permissionsApi";
 import { toast } from "react-toastify";
 import { TeacherTableHeaders } from "../../../../data/Admin";
-import CreateTeacher from "./CreateTeacher";
 import FirstLoader from "../../../ui/FirstLoader/FirstLoader";
 import Table from "../../../ui/Table/Table";
+import CreateTeacher from "./CreateTeacher";
+import { useGetGroupsQuery } from "../../../app/services/groupsApi";
 
 const initialFormState = {
   username: "",
@@ -24,90 +24,110 @@ const initialFormState = {
   role: "TEACHER",
   organizationId: "",
   permissions: [],
+  age: "",
+  gender: "",
+  enrolledGroupIds: [],
+  profilePictureUrl: "",
 };
 
 function Teachers() {
-  const id = useSelector((state) => state.auth.orgId);
+  const orgId = useSelector((state) => state.auth.orgId);
 
   const [isOpen, setIsOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: teachers, isLoading, isError } = useGetUserQuery("teachers");
   const {
-    data: permissions,
-    isLoading: isPerLoading,
-    isError: isAdminCreateError,
+    data: allUsers,
+    isLoading,
+    isError,
+  } = useGetUserQuery("users");
+  
+  const { data: groups, isLoading: isGroupsLoading } = useGetGroupsQuery({ query: "groups", organizationId: orgId });
+  const { 
+    data: permissionsData, 
+    isLoading: isPermLoading 
   } = useGetPermissionsQuery();
 
-  const [deleteAdmin, { isLoading: isDeleting }] = useDeleteUserMutation();
+  const [deleteUserMutation, { isLoading: isDeletingItems }] = useDeleteUserMutation();
   const [createAdmin, { isLoading: isCreating }] = useCreateUserMutation();
   const [editAdmin] = useEditUserMutation();
+  
   const [formData, setFormData] = useState({
     ...initialFormState,
-    organizationId: id,
+    organizationId: orgId,
   });
 
-  // 6. Filterni to'g'ri ishlatish
   const filteredData = useMemo(() => {
-
-    const list = teachers?.content || [];
-    if (!searchTerm) return list;
+    const list = allUsers?.content || allUsers || [];
+    const teachersList = list.filter(user => user.role === "TEACHER");
+    
+    if (!searchTerm) return teachersList;
 
     const searchStr = searchTerm.toLowerCase();
-    return list.filter(
+    return teachersList.filter(
       (user) =>
         user.firstname?.toLowerCase().includes(searchStr) ||
         user.lastname?.toLowerCase().includes(searchStr) ||
         user.username?.toLowerCase().includes(searchStr),
     );
-  }, [teachers, searchTerm]);
+  }, [allUsers, searchTerm]);
 
-  async function handleDelete(id) {
+  const groupedPermissions = useMemo(() => {
+    return permissionsData?.reduce((acc, permission) => {
+      const group = permission.split("_")[0];
+      if (!acc[group]) acc[group] = [];
+      acc[group].push(permission);
+      return acc;
+    }, {});
+  }, [permissionsData]);
+
+  async function handleDelete(userId) {
     if (window.confirm("Haqiqatdan ham o'chirmoqchimisiz?")) {
       try {
-        await deleteAdmin({ id, query: "teachers" }).unwrap();
+        await deleteUserMutation({ id: userId, query: "users" }).unwrap();
         toast.success("Muvaffaqiyatli o'chirildi");
       } catch (e) {
-        console.log(e);
-        toast.error("O'chirishda xatolik yuz berdi");
+        console.error("Delete Teacher Error:", e);
+        toast.error(e?.data?.message || "O'chirishda xatolik yuz berdi");
       }
     }
   }
 
-  function handleEdit(id) {
-    const user = teachers?.content?.find((u) => u.id === id);
+  function handleEdit(userId) {
+    const list = allUsers?.content || allUsers || [];
+    const user = list.find((u) => u.id === userId);
     if (user) {
       setEditingUser(user);
+      
+      let gIds = user.enrolledGroupIds || [];
+      if (user.enrolledGroups && Array.isArray(user.enrolledGroups)) {
+        gIds = user.enrolledGroups.map(g => g.id || g);
+      }
+
       setFormData({
         username: user.username || "",
         firstname: user.firstname || "",
         lastname: user.lastname || "",
-        password: "", // Xavfsizlik uchun parolni bo'sh qoldiramiz
+        password: "", 
         role: user.role || "TEACHER",
-        organizationId: id,
+        organizationId: orgId,
         permissions: user.permissions || [],
+        age: user.age || "",
+        gender: user.gender || "",
+        enrolledGroupIds: gIds,
+        profilePictureUrl: user.profilePictureUrl || "",
       });
       setIsOpen(true);
     }
   }
 
-  const groupedPermissions = permissions?.reduce((acc, permission) => {
-    const group = permission.split("_")[0];
-    if (!acc[group]) acc[group] = [];
-    acc[group].push(permission);
-    return acc;
-  }, {});
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
-      console.log(prev);
-      return { ...prev, [name]: value };
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  function handleCheckboxChange(e) {
+  const handleCheckboxChange = (e) => {
     const { value, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -115,55 +135,66 @@ function Teachers() {
         ? [...prev.permissions, value]
         : prev.permissions.filter((p) => p !== value),
     }));
-  }
+  };
 
-  function handleGroupChange(groupPermissions, checked) {
+  const handleGroupChange = (groupPermissions, checked) => {
     setFormData((prev) => ({
       ...prev,
       permissions: checked
         ? [...new Set([...prev.permissions, ...groupPermissions])]
         : prev.permissions.filter((p) => !groupPermissions.includes(p)),
     }));
-  }
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (formData.permissions.length === 0) {
-      toast.error("Kamida bitta huquq tanlang!");
-      return;
-    }
-
     try {
+      const payload = { 
+        ...formData, 
+        age: Number(formData.age),
+        active: true,
+        organizationId: Number(orgId),
+        enrolledGroupNames: [],
+        qualifiedSubjectIds: [],
+        qualifiedSubjectNames: [],
+        parentPhoneNumbers: [],
+        studentStatus: "ACTIVE",
+        coins: 0,
+        balance: 0
+      };
+
+      if (payload.profilePictureUrl && payload.profilePictureUrl.startsWith("data:")) {
+        delete payload.profilePictureUrl;
+      } else if (!payload.profilePictureUrl) {
+        delete payload.profilePictureUrl;
+      }
+
       if (editingUser) {
-        const payload = { ...formData };
         if (!payload.password) delete payload.password;
         await editAdmin({
-          query: "teachers",
+          query: "users",
           data: payload,
           id: editingUser.id,
         }).unwrap();
       } else {
         await createAdmin({
-          query: "teachers",
-          data: formData,
+          query: "users",
+          data: payload,
         }).unwrap();
       }
 
-      toast.success(
-        editingUser ? "Teacher tahrirlandi!" : "Teacher yaratildi!",
-      );
-
-      // 1. Forma tozalanishi va 4. Modal yopilishi
+      toast.success(editingUser ? "O'qituvchi tahrirlandi!" : "O'qituvchi yaratildi!");
       setIsOpen(false);
       setEditingUser(null);
-      setFormData({ ...initialFormState, organizationId: id });
+      setFormData({ ...initialFormState, organizationId: orgId });
     } catch (err) {
+      console.error("Submit Teacher Error:", err);
       toast.error(err?.data?.message || "Xatolik yuz berdi");
     }
   }
 
-  if (isLoading || isPerLoading || isDeleting) return <FirstLoader />;
-  if (isError || isAdminCreateError) return <div>Something went wrong!</div>;
+  if (isLoading || isDeletingItems || isGroupsLoading || isPermLoading) return <FirstLoader />;
+  if (isError) return <div className={styles.errorText}>Something went wrong while fetching data.</div>;
 
   return (
     <div className={styles.wrapper}>
@@ -172,8 +203,8 @@ function Teachers() {
         <button
           className={styles.createBtn}
           onClick={() => {
-            setEditingUser(null); // Yangi yaratish uchun editni tozalash
-            setFormData({ ...initialFormState, organizationId: id });
+            setEditingUser(null);
+            setFormData({ ...initialFormState, organizationId: orgId });
             setIsOpen(true);
           }}
         >
@@ -185,7 +216,7 @@ function Teachers() {
         <div className={styles.searchBox}>
           <input
             type="text"
-            placeholder="Search users..." // 3. Placeholder qo'shildi
+            placeholder="Search users..."
             className={styles.searchInput}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -196,19 +227,51 @@ function Teachers() {
       <div className={styles.tableContainer}>
         <Table
           headers={TeacherTableHeaders}
-          data={filteredData} // 6. Filterlangan ma'lumot uzatildi
+          data={filteredData}
           onDelete={handleDelete}
           onEdit={handleEdit}
-          renderRow={(user) => (
-            <>
-              <td>{user.firstname}</td>
-              <td>{user.lastname}</td>
-              <td>{user.age}</td>
-              <td>{user.gender}</td>
-              <td>{user.username}</td>
-              <td>{user.role}</td>
-            </>
-          )}
+          renderRow={(user) => {
+            let userGroups = user.enrolledGroups || [];
+            if (user.enrolledGroupIds && !user.enrolledGroups) {
+               userGroups = user.enrolledGroupIds.map(id => ({ id, name: `Guruh #${id}` }));
+            }
+
+            return (
+              <>
+                <td className={styles.userCell}>
+                  {user.profilePictureUrl ? (
+                    <img src={user.profilePictureUrl} alt="" className={styles.avatar} />
+                  ) : (
+                    <div className={styles.avatarPlaceholder}>
+                      {user.firstname?.charAt(0)}{user.lastname?.charAt(0)}
+                    </div>
+                  )}
+                  <div className={styles.userInfo}>
+                    <span className={styles.userName}>{user.firstname} {user.lastname}</span>
+                    <span className={styles.userUsername}>@{user.username}</span>
+                  </div>
+                </td>
+                <td><span className={styles.ageBadge}>{user.age || "—"} yosh</span></td>
+                <td>
+                   <span className={`${styles.genderBadge} ${user.gender === 'MALE' ? styles.male : styles.female}`}>
+                    {user.gender === 'MALE' ? 'Erkak' : 'Ayol'}
+                  </span>
+                </td>
+                <td>
+                  <div className={styles.groupChips}>
+                    {userGroups.length > 0 ? (
+                      userGroups.map((group, idx) => (
+                        <span key={idx} className={styles.groupChip}>{group.name || group}</span>
+                      ))
+                    ) : (
+                      <span className={styles.noGroups}>Guruh yo'q</span>
+                    )}
+                  </div>
+                </td>
+                <td>{user.role}</td>
+              </>
+            );
+          }}
         />
       </div>
 
@@ -218,22 +281,25 @@ function Teachers() {
           setIsOpen(value);
           if (!value) {
             setEditingUser(null);
-            setFormData({ ...initialFormState, organizationId: id });
+            setFormData({ ...initialFormState, organizationId: orgId });
           }
         }}
         title={editingUser ? "Edit Teacher" : "Create Teacher"}
       >
         <CreateTeacher
+          groups={groups?.content || groups}
           handleSubmit={handleSubmit}
           formData={formData}
           handleInputChange={handleInputChange}
-          groupedPermissions={groupedPermissions}
-          handleGroupChange={handleGroupChange}
           isCreating={isCreating}
+          setFormData={setFormData}
+          groupedPermissions={groupedPermissions}
           handleCheckboxChange={handleCheckboxChange}
+          handleGroupChange={handleGroupChange}
         />
       </Modal>
     </div>
   );
 }
+
 export default Teachers;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Lock, Eye, EyeOff, ShieldCheck, KeyRound, Loader2 } from "lucide-react";
 import { useChangePasswordMutation } from "../../../../app/services/userApi";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import styles from "./ProfileSecurity.module.css";
 
 function ProfileSecurity() {

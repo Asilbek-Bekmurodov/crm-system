@@ -36,8 +36,8 @@ function Subject() {
     isLoading,
     isError,
   } = useGetSubjectsQuery(
-    { query: "subjects", organizationId: orgId },
-    { skip: !orgId },
+    { query: "subjects", organizationId: `${orgId}&size=1000` },
+    { skip: !orgId || orgId === "undefined" },
   );
 
   const [deleteSubjects, { isLoading: isDeleting }] =
@@ -52,7 +52,7 @@ function Subject() {
   });
 
   const filteredData = useMemo(() => {
-    const list = subjects.content || [];
+    const list = subjects?.content || [];
     if (!searchTerm) return list;
 
     const searchStr = searchTerm.toLowerCase();

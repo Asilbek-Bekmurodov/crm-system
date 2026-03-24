@@ -191,56 +191,90 @@ body {
   background-color: var(--primary);
 }
 
-.logoLink {
+/* ================= Logo Section ================= */
+.logoSection {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 0 24px;
+  margin-bottom: 40px;
   text-decoration: none;
-  z-index: 110;
-  transition: transform 0.2s ease;
 }
 
-.logoLink:hover {
-  transform: scale(1.02);
-}
-
-.iconWrapper {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(45deg, #06b6d4, #6366f1);
+.logoBadge {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow:
-    0 10px 15px -3px rgba(6, 182, 212, 0.2),
-    0 4px 6px -4px rgba(6, 182, 212, 0.1);
+  box-shadow: 0 8px 16px -4px rgba(99, 102, 241, 0.5);
+  position: relative;
+  overflow: hidden;
 }
-.yonma {
+
+.logoIconInner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid white;
+  border-radius: 6px;
+  position: relative;
+}
+
+.dot {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background: #38bdf8;
+  border: 2px solid #6366f1;
+  border-radius: 50%;
+}
+
+.logoTextWrapper {
   display: flex;
-  gap: 6px;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-  margin-right: 20px;
+  flex-direction: column;
+  line-height: 1;
 }
 
-.icon {
-  color: white;
-}
-
-.logoText {
-  font-size: 1.25rem;
+.logoMain {
+  font-size: 18px;
   font-weight: 900;
-  letter-spacing: -0.025em;
-  color: white;
-  text-transform: uppercase;
-  font-family: "Inter", sans-serif;
+  color: #ffffff;
+  letter-spacing: 1px;
 }
 
-.highlight {
+.logoSub {
+  font-size: 10px;
+  font-weight: 700;
   color: #6366f1;
-  margin-left: 2px;
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
+
+/* ================= Menu Styles ================= */
+.menuIcon {
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.menuTitle {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.link:hover .menuIcon {
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.active .menuIcon {
+  color: #ffffff;
 }
 @media (max-width: 768px) {
   .logoText {

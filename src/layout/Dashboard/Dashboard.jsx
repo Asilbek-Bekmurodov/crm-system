@@ -2,7 +2,22 @@ import { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import styles from "./Dashboard.module.css";
 import { HiOutlineLogout } from "react-icons/hi";
-import { LayoutDashboard, Menu, X } from "lucide-react";
+import { 
+  LayoutDashboard, 
+  Users, 
+  GraduationCap, 
+  ShieldCheck, 
+  ClipboardCheck, 
+  Wallet, 
+  Bell, 
+  Calendar as CalendarIcon, 
+  MessageSquare, 
+  Settings, 
+  Users2, 
+  BookOpen, 
+  Menu, 
+  X 
+} from "lucide-react";
 import ProfileIcon from "../../ui/ProfileIcon/ProfileIcon";
 import { useDispatch } from "react-redux";
 import { getOrgId, logOut } from "../../app/features/authSlice";
@@ -19,7 +34,7 @@ function Dashboard({ menuData }) {
   });
 
   useEffect(() => {
-    if (user?.organizationId) {
+    if (user?.organizationId !== undefined && user?.organizationId !== null) {
       dispatch(getOrgId(user.organizationId));
     }
   }, [dispatch, user?.organizationId]);
@@ -30,6 +45,21 @@ function Dashboard({ menuData }) {
   };
   const toggleSidebar = () => setIsOpen(!isOpen);
 
+  const iconMap = {
+    Dashboard: <LayoutDashboard size={20} />,
+    Teacher: <Users size={20} />,
+    Student: <GraduationCap size={20} />,
+    Administrator: <ShieldCheck size={20} />,
+    Attendance: <ClipboardCheck size={20} />,
+    Finance: <Wallet size={20} />,
+    Notice: <Bell size={20} />,
+    Calendar: <CalendarIcon size={20} />,
+    Message: <MessageSquare size={20} />,
+    Settings: <Settings size={20} />,
+    Groups: <Users2 size={20} />,
+    Subject: <BookOpen size={20} />,
+  };
+
   return (
     <div className={styles.container}>
       {isOpen && <div className={styles.overlay} onClick={toggleSidebar}></div>}
@@ -38,13 +68,16 @@ function Dashboard({ menuData }) {
         className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}
       >
         <div className={styles.topSide}>
-          <div className={styles.yonma}>
-            <div className={styles.iconWrapper}>
-              <LayoutDashboard size={22} className={styles.icon} />
+          <div className={styles.logoSection}>
+            <div className={styles.logoBadge}>
+              <div className={styles.logoIconInner}>
+                <div className={styles.dot}></div>
+              </div>
             </div>
-            <span className={styles.logoText}>
-              CRM<span className={styles.highlight}>System</span>
-            </span>
+            <div className={styles.logoTextWrapper}>
+              <span className={styles.logoMain}>CRM</span>
+              <span className={styles.logoSub}>SYSTEM</span>
+            </div>
             <button className={styles.closeBtn} onClick={toggleSidebar}>
               <X size={24} color="white" />
             </button>
@@ -60,7 +93,8 @@ function Dashboard({ menuData }) {
                     isActive ? `${styles.link} ${styles.active}` : styles.link
                   }
                 >
-                  {title}
+                  <span className={styles.menuIcon}>{iconMap[title] || <LayoutDashboard size={20} />}</span>
+                  <span className={styles.menuTitle}>{title}</span>
                 </NavLink>
               </li>
             ))}

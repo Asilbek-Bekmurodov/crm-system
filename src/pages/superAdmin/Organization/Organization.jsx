@@ -62,7 +62,7 @@ function Organization() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <h1>All Organizations</h1>
+        <h1>Organizations</h1>
         <button className={styles.createBtn} onClick={() => setIsOpen(true)}>
           + Create Organization
         </button>

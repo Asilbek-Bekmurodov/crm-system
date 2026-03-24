@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import styles from "./CreateTeacher.module.css";
 
 function CreateAdministrator({
@@ -9,11 +11,13 @@ function CreateAdministrator({
   isCreating,
   handleCheckboxChange,
 }) {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <p className={styles.subtitle}>
-          Yangi Administrator yaratish va huquqlarni biriktirish
+          Yangi administrator yaratish va huquqlarni biriktirish
         </p>
       </header>
 
@@ -59,16 +63,52 @@ function CreateAdministrator({
           </div>
           <div className={styles.inputGroup}>
             <label className={styles.label}>Parol</label>
+            <div className={styles.passwordWrapper}>
+              <input
+                name="password"
+                className={styles.inputField}
+                type={showPassword ? "text" : "password"}
+                required={!formData.id && !formData.username} // Basic check
+                placeholder="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                autoComplete="current-password"
+              />
+              <span
+                className={styles.eyeIcon}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </span>
+            </div>
+          </div>
+          
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Yoshi (Age)</label>
             <input
-              name="password"
+              name="age"
               className={styles.inputField}
-              type="password"
+              type="number"
               required
-              placeholder="password"
-              value={formData.password}
+              placeholder="25"
+              value={formData.age}
               onChange={handleInputChange}
-              autoComplete="current-password"
             />
+          </div>
+          
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Jinsi (Gender)</label>
+            <select
+              name="gender"
+              className={styles.inputField}
+              required
+              value={formData.gender}
+              onChange={handleInputChange}
+            >
+              <option value="" disabled>Tanlang</option>
+              <option value="MALE">Erkak</option>
+              <option value="FEMALE">Ayol</option>
+            </select>
           </div>
         </div>
 
@@ -114,9 +154,7 @@ function CreateAdministrator({
                           onChange={handleCheckboxChange}
                         />
                         <span className={styles.permName}>
-                          {el.includes("_")
-                            ? el.split("_").slice(1).join(" ")
-                            : el}
+                          {el.replaceAll("_", " ")}
                         </span>
                       </label>
                     ))}
@@ -132,11 +170,12 @@ function CreateAdministrator({
             className={styles.submitBtn}
             disabled={isCreating}
           >
-            {isCreating ? "Saqlanmoqda..." : "Administrator saqlash"}
+            {isCreating ? "Saqlanmoqda..." : "Administratorni saqlash"}
           </button>
         </div>
       </form>
     </div>
   );
 }
+
 export default CreateAdministrator;

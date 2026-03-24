@@ -1,6 +1,6 @@
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, X, Check, XCircle } from "lucide-react";
 import styles from "./CreateStudent.module.css";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 function CreateStudent({
   handleSubmit,
@@ -10,13 +10,46 @@ function CreateStudent({
   handleGroupChange,
   isCreating,
   handleCheckboxChange,
+  groups,
 }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleGroupToggle = (groupId) => {
+    const currentGroups = formData.enrolledGroupIds || [];
+    const isSelected = currentGroups.includes(groupId);
+    const newGroups = isSelected
+      ? currentGroups.filter((id) => id !== groupId)
+      : [...currentGroups, groupId];
+    
+    handleInputChange({
+      target: { name: "enrolledGroupIds", value: newGroups },
+    });
+  };
+
+  const removeGroup = (groupId) => {
+    const newGroups = (formData.enrolledGroupIds || []).filter(id => id !== groupId);
+    handleInputChange({
+      target: { name: "enrolledGroupIds", value: newGroups },
+    });
+  };
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <p className={styles.subtitle}>
-          Yangi teacher yaratish va huquqlarni biriktirish
+          Yangi talaba yaratish va huquqlarni biriktirish
         </p>
       </header>
 
@@ -67,7 +100,7 @@ function CreateStudent({
                 name="password"
                 className={styles.inputField}
                 type={showPassword ? "text" : "password"}
-                required
+                required={!formData.id}
                 placeholder="password"
                 value={formData.password}
                 onChange={handleInputChange}
@@ -80,6 +113,115 @@ function CreateStudent({
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </span>
+            </div>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Ota-ona tel. raqami</label>
+            <input
+              name="parentPhoneNumber"
+              className={styles.inputField}
+              type="text"
+              required
+              placeholder="+998..."
+              value={formData.parentPhoneNumber || ""}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Yosh (Age)</label>
+            <input
+              name="age"
+              className={styles.inputField}
+              type="number"
+              required
+              placeholder="Yosh"
+              value={formData.age}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Jinsi (Gender)</label>
+            <select
+              name="gender"
+              className={styles.inputField}
+              required
+              value={formData.gender}
+              onChange={handleInputChange}
+            >
+              <option value="" disabled>Tanlang</option>
+              <option value="MALE">Erkak</option>
+              <option value="FEMALE">Ayol</option>
+            </select>
+          </div>
+          
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Guruhlarni biriktirish</label>
+            <div className={styles.multiSelectContainer}>
+              <div 
+                className={styles.selectTrigger} 
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                {formData.enrolledGroupIds?.length > 0 ? (
+                  <div className={styles.selectedTags}>
+                    {formData.enrolledGroupIds.map((id) => {
+                      const group = groups?.find(g => g.id === id);
+                      return (
+                        <span key={id} className={styles.tag}>
+                          {group?.name || id}
+                          <X 
+                            size={14} 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeGroup(id);
+                            }} 
+                          />
+                        </span>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <span className={styles.placeholder}>Guruhlarni tanlang...</span>
+                )}
+                <div className={`${styles.arrow} ${isDropdownOpen ? styles.arrowUp : ""}`}></div>
+              </div>
+              
+              {isDropdownOpen && (
+                <div className={styles.dropdownMenu} ref={dropdownRef}>
+                  <div className={styles.dropdownHeader}>
+                    <span>Guruhni tanlang</span>
+                    <button 
+                      type="button" 
+                      className={styles.closeDropdownBtn}
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <XCircle size={18} />
+                    </button>
+                  </div>
+                  <div className={styles.dropdownList}>
+                    {groups && groups.length > 0 ? (
+                      groups.map((group) => {
+                        const isSelected = formData.enrolledGroupIds?.includes(group.id);
+                        return (
+                          <div 
+                            key={group.id} 
+                            className={`${styles.dropdownItem} ${isSelected ? styles.itemSelected : ""}`}
+                            onClick={() => handleGroupToggle(group.id)}
+                          >
+                            <div className={styles.itemContent}>
+                              <span className={styles.itemName}>{group.name}</span>
+                              <span className={styles.itemSubject}>{group.subjectName}</span>
+                            </div>
+                            {isSelected && <Check size={16} className={styles.checkIcon} />}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className={styles.noData}>Guruhlar topilmadi</div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -126,9 +268,7 @@ function CreateStudent({
                           onChange={handleCheckboxChange}
                         />
                         <span className={styles.permName}>
-                          {el.includes("_")
-                            ? el.split("_").slice(1).join(" ")
-                            : el}
+                          {el.replaceAll("_", " ")}
                         </span>
                       </label>
                     ))}
@@ -144,7 +284,7 @@ function CreateStudent({
             className={styles.submitBtn}
             disabled={isCreating}
           >
-            {isCreating ? "Saqlanmoqda..." : "Studentni saqlash"}
+            {isCreating ? "Saqlanmoqda..." : "Talabani saqlash"}
           </button>
         </div>
       </form>

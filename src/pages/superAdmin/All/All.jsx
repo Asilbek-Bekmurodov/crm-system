@@ -26,7 +26,6 @@ function All() {
       // 1. Rol bo'yicha filtrlash
       const matchesRole = filterRole === "ALL" || user.role === filterRole;
 
-      // 2. Qidiruv bo'yicha filtrlash (Ism, Familiya yoki Username)
       const searchStr = searchTerm.toLowerCase();
       const matchesSearch =
         user.firstname?.toLowerCase().includes(searchStr) ||
@@ -65,7 +64,7 @@ function All() {
 
   return (
     <div className={styles.wrapper}>
-      {/* HEADER */}
+
       <div className={styles.header}>
         <h1>{filterRole === "ALL" ? "All" : filterRole} Users</h1>
         <button className={styles.createBtn} onClick={() => setIsOpen(true)}>
@@ -73,7 +72,6 @@ function All() {
         </button>
       </div>
 
-      {/* CONTROLS: Filtrlar va Input */}
       <div className={styles.controls}>
         <div className={styles.filterButtons}>
           {["ALL", "ADMIN", "STUDENT", "TEACHER", "ADMINISTRATOR"].map(
@@ -102,7 +100,6 @@ function All() {
         </div>
       </div>
 
-      {/* TABLE */}
       <div className={styles.tableContainer}>
         <Table
           headers={AllTableHeaders}
@@ -123,7 +120,6 @@ function All() {
         />
       </div>
 
-      {/* MODAL */}
       <Modal
         isOpen={isOpen}
         setIsOpen={(value) => {
