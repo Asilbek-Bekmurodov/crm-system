@@ -78,6 +78,14 @@ const userApi = createApi({
       }),
       invalidatesTags: ["user"],
     }),
+    updateMe: builder.mutation({
+      query: (data) => ({
+        url: "/users/me",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["user"],
+    }),
   }),
 });
 
@@ -90,6 +98,7 @@ export const {
   useGetByRoleQuery,
   useGetMeQuery,
   useChangePasswordMutation,
+  useUpdateMeMutation,
 } = userApi;
 
 export default userApi;
